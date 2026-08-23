@@ -5,28 +5,28 @@ export const DECISION_OUTCOMES = ["approve", "revise", "reject"] as const;
 export type DecisionOutcome = (typeof DECISION_OUTCOMES)[number];
 
 export const DECISION_LABELS: Record<DecisionOutcome, string> = {
-  approve: "Approve",
-  revise: "Request Revision",
-  reject: "Reject",
+  approve: "Onayla",
+  revise: "Revizyon İste",
+  reject: "Reddet",
 };
 
 export const DECISION_DESCRIPTIONS: Record<DecisionOutcome, string> = {
-  approve: "Report meets the rubric and advances to the next round.",
-  revise: "Report is promising but must be resubmitted with corrections.",
-  reject: "Report does not satisfy the competition criteria.",
+  approve: "Rapor rubriği karşılıyor ve bir sonraki tura ilerliyor.",
+  revise: "Rapor umut verici ama düzeltmelerle yeniden gönderilmesi gerekiyor.",
+  reject: "Rapor yarışma kriterlerini karşılamıyor.",
 };
 
 export const finalDecisionSchema = z.object({
   finalScore: z
-    .number({ error: "Enter a final score between 0 and 100" })
-    .min(0, "Final score cannot be below 0")
-    .max(100, "Final score cannot exceed 100"),
-  outcome: z.enum(DECISION_OUTCOMES, { error: "Select a final decision" }),
+    .number({ error: "0 ile 100 arasında bir final puanı girin" })
+    .min(0, "Final puanı 0'ın altında olamaz")
+    .max(100, "Final puanı 100'ü geçemez"),
+  outcome: z.enum(DECISION_OUTCOMES, { error: "Bir nihai karar seçin" }),
   refereeNotes: z
     .string()
     .trim()
-    .min(20, "Add at least 20 characters of justification")
-    .max(1000, "Justification must be 1000 characters or fewer"),
+    .min(20, "En az 20 karakterlik bir gerekçe ekleyin")
+    .max(1000, "Gerekçe en fazla 1000 karakter olabilir"),
 });
 
 /** Raw form field shape, as registered on the inputs. */

@@ -25,10 +25,10 @@ export function ReportDetail({ report }: ReportDetailProps) {
             />
           </svg>
         </span>
-        <p className="text-sm font-semibold text-foreground">Select a report</p>
+        <p className="text-sm font-semibold text-foreground">Bir rapor seçin</p>
         <p className="max-w-xs text-xs text-muted">
-          Choose a report from the list to review its submission details and evaluation
-          status.
+          Başvuru detaylarını ve değerlendirme durumunu incelemek için listeden bir rapor
+          seçin.
         </p>
       </div>
     );
@@ -52,13 +52,13 @@ export function ReportDetail({ report }: ReportDetailProps) {
       <dl className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div>
           <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Category
+            Kategori
           </dt>
           <dd className="mt-1 text-sm text-foreground">{report.category}</dd>
         </div>
         <div>
           <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Submitted
+            Gönderim Tarihi
           </dt>
           <dd className="mt-1 text-sm text-foreground">
             {formatDate(report.submissionDate)}
@@ -66,35 +66,35 @@ export function ReportDetail({ report }: ReportDetailProps) {
         </div>
         <div>
           <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Status
+            Durum
           </dt>
           <dd className="mt-1 text-sm text-foreground">
             {report.status === "pending"
-              ? "Awaiting AI-assisted analysis"
-              : "Analysis complete"}
+              ? "AI destekli analiz bekleniyor"
+              : "Analiz tamamlandı"}
           </dd>
         </div>
       </dl>
 
       <div className="mt-6 space-y-4">
         <section className="rounded-xl border border-border p-4">
-          <h3 className="text-sm font-bold text-foreground">AI-Assisted Score Summary</h3>
+          <h3 className="text-sm font-bold text-foreground">AI Destekli Puan Özeti</h3>
           <p className="mt-2 text-sm text-muted">
             {report.status === "analyzed"
-              ? "Confidence scores, findings, and the AI 4th Eye suggestion are ready for review."
-              : "This report is queued for AI-assisted analysis. Scoring will appear here once processing completes."}
+              ? "Güven puanları, bulgular ve AI Dördüncü Göz önerisi incelemeye hazır."
+              : "Bu rapor AI destekli analiz için sırada. İşlem tamamlandığında puanlama burada görünecek."}
           </p>
           <Link
             href={`/dashboard/referee/${report.reportId}`}
             data-testid="open-analysis-link"
             className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
           >
-            Open AI Analysis Report <span aria-hidden="true">→</span>
+            AI Analiz Raporunu Aç <span aria-hidden="true">→</span>
           </Link>
         </section>
         <section className="rounded-xl border border-border p-4">
-          <h3 className="text-sm font-bold text-foreground">Referee Notes</h3>
-          <p className="mt-2 text-sm text-muted">No notes added yet.</p>
+          <h3 className="text-sm font-bold text-foreground">Hakem Notları</h3>
+          <p className="mt-2 text-sm text-muted">Henüz not eklenmedi.</p>
         </section>
       </div>
     </div>

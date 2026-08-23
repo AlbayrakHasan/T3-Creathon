@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { CriteriaTemplateForm } from "./criteria-template-form";
 
 async function fillWeight(user: ReturnType<typeof userEvent.setup>, index: number, value: string) {
-  const weightInput = screen.getByLabelText(new RegExp(`Metric ${index + 1} weight`, "i"));
+  const weightInput = screen.getByLabelText(new RegExp(`Metrik ${index + 1} ağırlık`, "i"));
   await user.clear(weightInput);
   if (value) await user.type(weightInput, value);
 }
@@ -12,35 +12,35 @@ describe("CriteriaTemplateForm", () => {
   it("renders the template name, category, and at least one metric and heading row", () => {
     render(<CriteriaTemplateForm />);
 
-    expect(screen.getByLabelText(/template name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^category$/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/metric 1 name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^required heading 1$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/şablon adı/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^kategori$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/metrik 1 adı/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^zorunlu başlık 1$/i)).toBeInTheDocument();
   });
 
   it("shows validation errors when submitting an empty form", async () => {
     const user = userEvent.setup();
     render(<CriteriaTemplateForm />);
 
-    await user.click(screen.getByRole("button", { name: /save template/i }));
+    await user.click(screen.getByRole("button", { name: /şablonu kaydet/i }));
 
     expect(
-      await screen.findByText(/template name must be at least 3 characters/i),
+      await screen.findByText(/şablon adı en az 3 karakter olmalı/i),
     ).toBeInTheDocument();
-    expect(document.getElementById("category-error")).toHaveTextContent(/select a category/i);
-    expect(screen.getByText(/metric name must be at least 2 characters/i)).toBeInTheDocument();
-    expect(screen.getByText(/heading must be at least 2 characters/i)).toBeInTheDocument();
+    expect(document.getElementById("category-error")).toHaveTextContent(/bir kategori seçin/i);
+    expect(screen.getByText(/metrik adı en az 2 karakter olmalı/i)).toBeInTheDocument();
+    expect(screen.getByText(/başlık en az 2 karakter olmalı/i)).toBeInTheDocument();
   });
 
   it("rejects a template name shorter than 3 characters", async () => {
     const user = userEvent.setup();
     render(<CriteriaTemplateForm />);
 
-    await user.type(screen.getByLabelText(/template name/i), "AI");
-    await user.click(screen.getByRole("button", { name: /save template/i }));
+    await user.type(screen.getByLabelText(/şablon adı/i), "AI");
+    await user.click(screen.getByRole("button", { name: /şablonu kaydet/i }));
 
     expect(
-      await screen.findByText(/template name must be at least 3 characters/i),
+      await screen.findByText(/şablon adı en az 3 karakter olmalı/i),
     ).toBeInTheDocument();
   });
 
@@ -48,16 +48,16 @@ describe("CriteriaTemplateForm", () => {
     const user = userEvent.setup();
     render(<CriteriaTemplateForm />);
 
-    await user.type(screen.getByLabelText(/template name/i), "Robotics Final Round");
-    await user.selectOptions(screen.getByLabelText(/^category$/i), "Robotics & Automation");
-    await user.type(screen.getByLabelText(/metric 1 name/i), "Technical feasibility");
+    await user.type(screen.getByLabelText(/şablon adı/i), "Robotik Final Turu");
+    await user.selectOptions(screen.getByLabelText(/^kategori$/i), "Robotik ve Otomasyon");
+    await user.type(screen.getByLabelText(/metrik 1 adı/i), "Teknik uygulanabilirlik");
     await fillWeight(user, 0, "40");
-    await user.type(screen.getByLabelText(/^required heading 1$/i), "Abstract");
+    await user.type(screen.getByLabelText(/^zorunlu başlık 1$/i), "Özet");
 
-    await user.click(screen.getByRole("button", { name: /save template/i }));
+    await user.click(screen.getByRole("button", { name: /şablonu kaydet/i }));
 
     expect(
-      await screen.findByText(/metric weights must add up to 100%.*currently 40%/i),
+      await screen.findByText(/metrik ağırlıkları toplamda %100 olmalı.*%40/i),
     ).toBeInTheDocument();
   });
 
@@ -65,15 +65,15 @@ describe("CriteriaTemplateForm", () => {
     const user = userEvent.setup();
     render(<CriteriaTemplateForm />);
 
-    expect(screen.getByLabelText(/remove metric 1/i)).toBeDisabled();
+    expect(screen.getByLabelText(/metrik 1 kaldır/i)).toBeDisabled();
 
-    await user.click(screen.getByRole("button", { name: /add metric/i }));
-    expect(screen.getByLabelText(/metric 2 name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/remove metric 1/i)).not.toBeDisabled();
+    await user.click(screen.getByRole("button", { name: /metrik ekle/i }));
+    expect(screen.getByLabelText(/metrik 2 adı/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/metrik 1 kaldır/i)).not.toBeDisabled();
 
-    await user.click(screen.getByLabelText(/remove metric 2/i));
-    expect(screen.queryByLabelText(/metric 2 name/i)).not.toBeInTheDocument();
-    expect(screen.getByLabelText(/remove metric 1/i)).toBeDisabled();
+    await user.click(screen.getByLabelText(/metrik 2 kaldır/i));
+    expect(screen.queryByLabelText(/metrik 2 adı/i)).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/metrik 1 kaldır/i)).toBeDisabled();
   });
 
   it("submits successfully with valid data, shows a success banner, and resets the form", async () => {
@@ -81,44 +81,44 @@ describe("CriteriaTemplateForm", () => {
     const onSaved = jest.fn();
     render(<CriteriaTemplateForm onSaved={onSaved} />);
 
-    await user.type(screen.getByLabelText(/template name/i), "Robotics Final Round");
-    await user.selectOptions(screen.getByLabelText(/^category$/i), "Robotics & Automation");
-    await user.type(screen.getByLabelText(/metric 1 name/i), "Technical feasibility");
+    await user.type(screen.getByLabelText(/şablon adı/i), "Robotik Final Turu");
+    await user.selectOptions(screen.getByLabelText(/^kategori$/i), "Robotik ve Otomasyon");
+    await user.type(screen.getByLabelText(/metrik 1 adı/i), "Teknik uygulanabilirlik");
     await fillWeight(user, 0, "100");
-    await user.type(screen.getByLabelText(/^required heading 1$/i), "Abstract");
+    await user.type(screen.getByLabelText(/^zorunlu başlık 1$/i), "Özet");
 
-    await user.click(screen.getByRole("button", { name: /save template/i }));
+    await user.click(screen.getByRole("button", { name: /şablonu kaydet/i }));
 
     const banner = await screen.findByTestId("template-saved-banner");
-    expect(within(banner).getByText(/robotics final round/i)).toBeInTheDocument();
+    expect(within(banner).getByText(/robotik final turu/i)).toBeInTheDocument();
 
     expect(onSaved).toHaveBeenCalledTimes(1);
     expect(onSaved).toHaveBeenCalledWith(
       expect.objectContaining({
-        templateName: "Robotics Final Round",
-        category: "Robotics & Automation",
-        metrics: [{ name: "Technical feasibility", weight: 100 }],
-        requiredHeadings: [{ value: "Abstract" }],
+        templateName: "Robotik Final Turu",
+        category: "Robotik ve Otomasyon",
+        metrics: [{ name: "Teknik uygulanabilirlik", weight: 100 }],
+        requiredHeadings: [{ value: "Özet" }],
       }),
     );
 
-    expect(screen.getByLabelText(/template name/i)).toHaveValue("");
-    expect(screen.getByLabelText(/metric 1 name/i)).toHaveValue("");
+    expect(screen.getByLabelText(/şablon adı/i)).toHaveValue("");
+    expect(screen.getByLabelText(/metrik 1 adı/i)).toHaveValue("");
   });
 
   it("dismisses the success banner when the close button is clicked", async () => {
     const user = userEvent.setup();
     render(<CriteriaTemplateForm />);
 
-    await user.type(screen.getByLabelText(/template name/i), "Robotics Final Round");
-    await user.selectOptions(screen.getByLabelText(/^category$/i), "Robotics & Automation");
-    await user.type(screen.getByLabelText(/metric 1 name/i), "Technical feasibility");
+    await user.type(screen.getByLabelText(/şablon adı/i), "Robotik Final Turu");
+    await user.selectOptions(screen.getByLabelText(/^kategori$/i), "Robotik ve Otomasyon");
+    await user.type(screen.getByLabelText(/metrik 1 adı/i), "Teknik uygulanabilirlik");
     await fillWeight(user, 0, "100");
-    await user.type(screen.getByLabelText(/^required heading 1$/i), "Abstract");
-    await user.click(screen.getByRole("button", { name: /save template/i }));
+    await user.type(screen.getByLabelText(/^zorunlu başlık 1$/i), "Özet");
+    await user.click(screen.getByRole("button", { name: /şablonu kaydet/i }));
 
     const banner = await screen.findByTestId("template-saved-banner");
-    await user.click(within(banner).getByRole("button", { name: /dismiss/i }));
+    await user.click(within(banner).getByRole("button", { name: /kapat/i }));
 
     expect(screen.queryByTestId("template-saved-banner")).not.toBeInTheDocument();
   });

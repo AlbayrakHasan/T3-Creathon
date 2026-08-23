@@ -26,15 +26,15 @@ export function AiAnalysisReport({ analysis }: AiAnalysisReportProps) {
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border pb-5">
         <div>
           <h2 id="ai-analysis-heading" className="text-lg font-bold text-foreground">
-            AI Analysis Report
+            AI Analiz Raporu
           </h2>
           <p className="mt-1 text-sm text-muted">
-            {analysis.engineVersion} · analysed {formatDate(analysis.analyzedAt)}
+            {analysis.engineVersion} · {formatDate(analysis.analyzedAt)} tarihinde analiz edildi
           </p>
         </div>
         <div className="flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-2">
           <span className="text-xs font-semibold uppercase tracking-wide text-muted">
-            Overall confidence
+            Genel güven
           </span>
           <span
             data-testid="overall-confidence"

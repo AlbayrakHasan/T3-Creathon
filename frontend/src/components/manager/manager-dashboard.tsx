@@ -7,9 +7,9 @@ export function ManagerDashboard() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-bold text-foreground">Competition Setup</h2>
+        <h2 className="text-xl font-bold text-foreground">Yarışma Kurulumu</h2>
         <p className="mt-1 text-sm text-muted">
-          Define evaluation criteria templates and manage incoming report submissions.
+          Değerlendirme kriter şablonlarını tanımlayın ve gelen rapor başvurularını yönetin.
         </p>
       </div>
 

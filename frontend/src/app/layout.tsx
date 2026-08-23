@@ -9,13 +9,13 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "AI-Assisted Evaluation System",
-  description: "Enterprise-grade AI-assisted competition evaluation platform.",
+  title: "AI Destekli Değerlendirme Sistemi",
+  description: "Kurumsal düzeyde AI destekli yarışma değerlendirme platformu.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${nunito.variable} h-full antialiased`}>
+    <html lang="tr" className={`${nunito.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-surface text-foreground font-sans">
         {children}
       </body>

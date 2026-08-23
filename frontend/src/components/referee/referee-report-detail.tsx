@@ -26,7 +26,7 @@ export function RefereeReportDetail({
         href="/dashboard/referee"
         className="inline-flex w-fit items-center gap-1.5 text-sm font-semibold text-muted transition hover:text-brand-700"
       >
-        <span aria-hidden="true">←</span> Back to all reports
+        <span aria-hidden="true">←</span> Tüm raporlara dön
       </Link>
 
       <header className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
@@ -45,13 +45,13 @@ export function RefereeReportDetail({
         <dl className="mt-5 grid grid-cols-1 gap-4 border-t border-border pt-5 sm:grid-cols-3">
           <div>
             <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
-              Category
+              Kategori
             </dt>
             <dd className="mt-1 text-sm font-semibold text-foreground">{report.category}</dd>
           </div>
           <div>
             <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
-              Submitted
+              Gönderim Tarihi
             </dt>
             <dd className="mt-1 text-sm font-semibold text-foreground">
               {formatDate(report.submissionDate)}
@@ -59,10 +59,10 @@ export function RefereeReportDetail({
           </div>
           <div>
             <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
-              Analysis
+              Analiz
             </dt>
             <dd className="mt-1 text-sm font-semibold text-foreground">
-              {analysis ? "Complete" : "Queued"}
+              {analysis ? "Tamamlandı" : "Sırada"}
             </dd>
           </div>
         </dl>
@@ -94,10 +94,10 @@ export function RefereeReportDetail({
               />
             </svg>
           </span>
-          <p className="text-sm font-semibold text-foreground">Analysis in progress</p>
+          <p className="text-sm font-semibold text-foreground">Analiz devam ediyor</p>
           <p className="max-w-sm text-xs leading-relaxed text-muted">
-            The evaluation engine has not finished processing this submission. Confidence
-            scores and the AI 4th Eye suggestion will appear here once it completes.
+            Değerlendirme motoru bu başvuruyu işlemeyi henüz tamamlamadı. İşlem
+            tamamlandığında güven puanları ve AI Dördüncü Göz önerisi burada görünecektir.
           </p>
         </section>
       )}

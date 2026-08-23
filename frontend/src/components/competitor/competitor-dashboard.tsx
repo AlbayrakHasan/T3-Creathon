@@ -46,7 +46,7 @@ export function CompetitorDashboard({ summary }: CompetitorDashboardProps) {
 
           <div className="flex flex-col items-end gap-2">
             <h2 id="final-status-heading" className="sr-only">
-              Final Status
+              Nihai Durum
             </h2>
             <span
               data-testid="outcome-badge"
@@ -58,14 +58,14 @@ export function CompetitorDashboard({ summary }: CompetitorDashboardProps) {
               {evaluation.finalScore}
               <span className="text-base font-bold text-muted">/100</span>
             </p>
-            <p className="text-xs text-muted">Final score</p>
+            <p className="text-xs text-muted">Final puan</p>
           </div>
         </div>
 
         <dl className="mt-6 grid grid-cols-1 gap-4 border-t border-border pt-5 sm:grid-cols-2">
           <div>
             <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
-              Submitted
+              Gönderim Tarihi
             </dt>
             <dd className="mt-1 text-sm font-semibold text-foreground">
               {formatDate(evaluation.submittedAt)}
@@ -73,7 +73,7 @@ export function CompetitorDashboard({ summary }: CompetitorDashboardProps) {
           </div>
           <div>
             <dt className="text-xs font-semibold uppercase tracking-wide text-muted">
-              Reviewed
+              İnceleme Tarihi
             </dt>
             <dd className="mt-1 text-sm font-semibold text-foreground">
               {formatDate(evaluation.reviewedAt)}
@@ -84,16 +84,16 @@ export function CompetitorDashboard({ summary }: CompetitorDashboardProps) {
 
       <FeedbackSection
         variant="strength"
-        title="Strengths"
-        intro="What the review panel found most convincing about your submission."
+        title="Güçlü Yönler"
+        intro="Değerlendirme kurulunun başvurunuzda en ikna edici bulduğu noktalar."
         points={evaluation.strengths}
         testId="strengths-section"
       />
 
       <FeedbackSection
         variant="improvement"
-        title="Areas for Improvement"
-        intro="Concrete, actionable notes to carry into your next submission."
+        title="Geliştirilmesi Gereken Alanlar"
+        intro="Bir sonraki başvurunuza taşıyabileceğiniz somut, uygulanabilir notlar."
         points={evaluation.improvements}
         testId="improvements-section"
       />
@@ -104,7 +104,7 @@ export function CompetitorDashboard({ summary }: CompetitorDashboardProps) {
         className="rounded-2xl border border-brand-100 bg-brand-50/70 p-6"
       >
         <h2 id="next-step-heading" className="text-base font-bold text-brand-900">
-          What happens next
+          Sırada Ne Var
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-brand-900/80">
           {evaluation.nextStep}

@@ -32,7 +32,7 @@ describe("RoleSelectionScreen", () => {
   it("exposes an accessible radiogroup of exactly four roles", () => {
     render(<RoleSelectionScreen />);
 
-    const group = screen.getByRole("radiogroup", { name: /select your role/i });
+    const group = screen.getByRole("radiogroup", { name: /rolünüzü seçin/i });
     expect(group).toBeInTheDocument();
 
     const options = screen.getAllByRole("radio");

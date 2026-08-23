@@ -86,7 +86,7 @@ export function ReportUpload({
               fileName: file.name,
               status: "error",
               progress: 0,
-              errorMessage: "Unsupported file type. Upload a PDF or Word document.",
+              errorMessage: "Desteklenmeyen dosya türü. Bir PDF veya Word belgesi yükleyin.",
             },
           ]);
           return;
@@ -153,17 +153,17 @@ export function ReportUpload({
     >
       <div className="mb-6">
         <h2 id={dropzoneLabelId} className="text-xl font-bold text-foreground">
-          Report Upload
+          Rapor Yükleme
         </h2>
         <p className="mt-1 text-sm text-muted">
-          Drag and drop PDF or Word evaluation reports, or browse to select files.
+          PDF veya Word değerlendirme raporlarını sürükleyip bırakın, ya da göz atarak dosya seçin.
         </p>
       </div>
 
       <div
         role="button"
         tabIndex={0}
-        aria-label="Upload report files. Drag and drop, or press Enter to browse for PDF or Word documents."
+        aria-label="Rapor dosyalarını yükleyin. Sürükleyip bırakın veya PDF ya da Word belgesi seçmek için Enter tuşuna basın."
         data-testid="upload-dropzone"
         data-dragging={isDragging}
         onClick={() => inputRef.current?.click()}
@@ -197,9 +197,9 @@ export function ReportUpload({
           </svg>
         </span>
         <p className="text-sm font-semibold text-foreground">
-          {isDragging ? "Drop files to upload" : "Drag & drop files here, or click to browse"}
+          {isDragging ? "Yüklemek için dosyaları bırakın" : "Dosyaları buraya sürükleyip bırakın veya göz atmak için tıklayın"}
         </p>
-        <p className="text-xs text-muted">PDF or Word documents only</p>
+        <p className="text-xs text-muted">Yalnızca PDF veya Word belgeleri</p>
         <input
           ref={inputRef}
           type="file"
@@ -214,7 +214,7 @@ export function ReportUpload({
       </div>
 
       {items.length > 0 && (
-        <ul className="mt-5 flex flex-col gap-2.5" data-testid="upload-list" aria-label="Uploads">
+        <ul className="mt-5 flex flex-col gap-2.5" data-testid="upload-list" aria-label="Yüklemeler">
           {items.map((item) => (
             <li
               key={item.id}
@@ -234,7 +234,7 @@ export function ReportUpload({
                   )}
                   {item.status === "success" && (
                     <span className="shrink-0 text-xs font-semibold text-emerald-600">
-                      Uploaded
+                      Yüklendi
                     </span>
                   )}
                 </div>
@@ -242,7 +242,7 @@ export function ReportUpload({
                 {item.status === "uploading" && (
                   <div
                     role="progressbar"
-                    aria-label={`Uploading ${item.fileName}`}
+                    aria-label={`${item.fileName} yükleniyor`}
                     aria-valuenow={item.progress}
                     aria-valuemin={0}
                     aria-valuemax={100}
@@ -265,7 +265,7 @@ export function ReportUpload({
               <button
                 type="button"
                 onClick={() => removeItem(item.id)}
-                aria-label={`Remove ${item.fileName}`}
+                aria-label={`Kaldır: ${item.fileName}`}
                 className="shrink-0 rounded-md p-1.5 text-muted transition hover:bg-slate-100 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
               >
                 ×

@@ -71,10 +71,11 @@ export function FinalDecisionForm({
     >
       <div className="border-b border-border pb-5">
         <h2 id={headingId} className="text-lg font-bold text-foreground">
-          Final Decision &amp; Scoring
+          Nihai Karar ve Puanlama
         </h2>
         <p className="mt-1 text-sm text-muted">
-          The AI 4th Eye is advisory only. Your entry below is the decision of record.
+          AI Dördüncü Göz yalnızca danışma niteliğindedir. Aşağıdaki girişiniz kayıtlı nihai
+          karardır.
         </p>
       </div>
 
@@ -85,14 +86,14 @@ export function FinalDecisionForm({
           className="mt-5 flex items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
         >
           <span>
-            Final decision recorded for {submitted.reportId}:{" "}
-            {DECISION_LABELS[submitted.outcome]} at {submitted.finalScore}/100
-            {submitted.overridesAiSuggestion ? " (AI suggestion overridden)." : "."}
+            {submitted.reportId} için nihai karar kaydedildi:{" "}
+            {DECISION_LABELS[submitted.outcome]}, {submitted.finalScore}/100 puan
+            {submitted.overridesAiSuggestion ? " (AI önerisi geçersiz kılındı)." : "."}
           </span>
           <button
             type="button"
             onClick={() => setSubmitted(null)}
-            aria-label="Dismiss saved decision message"
+            aria-label="Kaydedilen karar mesajını kapat"
             className="rounded-md p-1 text-emerald-700 transition hover:bg-emerald-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
           >
             ×
@@ -122,18 +123,18 @@ export function FinalDecisionForm({
               </svg>
             </span>
             <h3 id="ai-fourth-eye-heading" className="text-sm font-bold text-brand-800">
-              AI 4th Eye — Suggestion
+              AI Dördüncü Göz — Öneri
             </h3>
           </div>
 
           <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-brand-700/80">
-            Advisory · not binding
+            Danışma niteliğinde · bağlayıcı değil
           </p>
 
           <dl className="mt-4 flex flex-col gap-3">
             <div className="flex items-baseline justify-between gap-2">
               <dt className="text-xs font-semibold uppercase tracking-wide text-brand-700/80">
-                Suggested score
+                Önerilen puan
               </dt>
               <dd
                 data-testid="ai-suggested-score"
@@ -145,7 +146,7 @@ export function FinalDecisionForm({
             </div>
             <div className="flex items-baseline justify-between gap-2">
               <dt className="text-xs font-semibold uppercase tracking-wide text-brand-700/80">
-                Suggested outcome
+                Önerilen sonuç
               </dt>
               <dd
                 data-testid="ai-suggested-outcome"
@@ -168,14 +169,14 @@ export function FinalDecisionForm({
           className="flex flex-col gap-6"
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="text-sm font-bold text-foreground">Referee Final Input</h3>
+            <h3 className="text-sm font-bold text-foreground">Hakem Nihai Girişi</h3>
             {overridesAiSuggestion ? (
               <span
                 data-testid="override-indicator"
                 className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-bold text-amber-700 ring-1 ring-inset ring-amber-200"
               >
                 <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-current" />
-                Overriding AI suggestion
+                AI önerisi geçersiz kılınıyor
               </span>
             ) : (
               <span
@@ -183,14 +184,14 @@ export function FinalDecisionForm({
                 className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-muted ring-1 ring-inset ring-border"
               >
                 <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-current" />
-                Matching AI suggestion
+                AI önerisiyle eşleşiyor
               </span>
             )}
           </div>
 
           <div className="flex flex-col gap-1.5">
             <label htmlFor="finalScore" className="text-sm font-semibold text-foreground">
-              Final score
+              Final puan
             </label>
             <div className="relative w-32">
               <input
@@ -216,13 +217,14 @@ export function FinalDecisionForm({
               </p>
             ) : (
               <p id="finalScore-hint" className="text-xs text-muted">
-                Pre-filled with the AI suggestion of {suggestion.score}. Change it freely.
+                AI önerisi olan {suggestion.score} ile önceden dolduruldu. Dilediğiniz gibi
+                değiştirebilirsiniz.
               </p>
             )}
           </div>
 
           <fieldset className="flex flex-col gap-3">
-            <legend className="text-sm font-semibold text-foreground">Final decision</legend>
+            <legend className="text-sm font-semibold text-foreground">Nihai karar</legend>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
               {DECISION_OUTCOMES.map((outcome) => {
                 const isAiChoice = outcome === suggestion.outcome;
@@ -260,7 +262,7 @@ export function FinalDecisionForm({
                         data-testid={`ai-choice-marker-${outcome}`}
                         className="mt-0.5 text-[0.7rem] font-bold uppercase tracking-wide text-brand-700"
                       >
-                        AI 4th Eye pick
+                        AI Dördüncü Göz seçimi
                       </span>
                     )}
                   </label>
@@ -276,12 +278,12 @@ export function FinalDecisionForm({
 
           <div className="flex flex-col gap-1.5">
             <label htmlFor="refereeNotes" className="text-sm font-semibold text-foreground">
-              Justification
+              Gerekçe
             </label>
             <textarea
               id="refereeNotes"
               rows={4}
-              placeholder="Explain your scoring, and note anything where you disagreed with the AI analysis."
+              placeholder="Puanlamanızı açıklayın ve AI analiziyle aynı fikirde olmadığınız noktaları belirtin."
               aria-invalid={errors.refereeNotes ? "true" : "false"}
               aria-describedby={errors.refereeNotes ? "refereeNotes-error" : undefined}
               {...register("refereeNotes")}
@@ -304,14 +306,14 @@ export function FinalDecisionForm({
               }}
               className="rounded-lg border border-border px-4 py-2.5 text-sm font-semibold text-muted transition hover:border-brand-300 hover:text-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
             >
-              Reset to AI suggestion
+              AI önerisine sıfırla
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
               className="rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Submit final decision
+              Nihai kararı gönder
             </button>
           </div>
         </form>

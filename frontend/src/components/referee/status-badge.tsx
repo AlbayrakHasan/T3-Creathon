@@ -6,8 +6,8 @@ const STATUS_STYLES: Record<ReportStatus, string> = {
 };
 
 const STATUS_LABELS: Record<ReportStatus, string> = {
-  pending: "Pending",
-  analyzed: "Analyzed",
+  pending: "Beklemede",
+  analyzed: "Analiz Edildi",
 };
 
 export function StatusBadge({ status }: { status: ReportStatus }) {

@@ -6,7 +6,7 @@ export default function EvaluationManagerDashboard() {
     <RoleGuard requiredRole="EVALUATION_MANAGER">
       <DashboardShell role="EVALUATION_MANAGER">
         <p className="text-sm text-muted">
-          Configure AI-assisted evaluation rubrics and review outcomes.
+          AI destekli değerlendirme rubriklerini yapılandırın ve sonuçları inceleyin.
         </p>
       </DashboardShell>
     </RoleGuard>

@@ -17,26 +17,26 @@ export interface RoleDefinition {
 export const ROLE_DEFINITIONS: Record<Role, RoleDefinition> = {
   COMPETITION_MANAGER: {
     role: "COMPETITION_MANAGER",
-    label: "Competition Manager",
-    description: "Oversee competitions, schedules, and overall event configuration.",
+    label: "Yarışma Yöneticisi",
+    description: "Yarışmaları, takvimleri ve genel etkinlik yapılandırmasını yönetir.",
     dashboardPath: "/dashboard/manager",
   },
   REFEREE: {
     role: "REFEREE",
-    label: "Referee",
-    description: "Score live performances and enforce competition rules.",
+    label: "Hakem/Değerlendirici",
+    description: "Canlı performansları puanlar ve yarışma kurallarını uygular.",
     dashboardPath: "/dashboard/referee",
   },
   COMPETITOR: {
     role: "COMPETITOR",
-    label: "Competitor",
-    description: "View schedules, submissions, and personal results.",
+    label: "Yarışmacı",
+    description: "Takvimleri, başvuruları ve kişisel sonuçları görüntüler.",
     dashboardPath: "/dashboard/competitor",
   },
   EVALUATION_MANAGER: {
     role: "EVALUATION_MANAGER",
-    label: "Evaluation Manager",
-    description: "Configure AI-assisted evaluation rubrics and review outcomes.",
+    label: "Değerlendirme Yöneticisi",
+    description: "AI destekli değerlendirme rubriklerini yapılandırır ve sonuçları inceler.",
     dashboardPath: "/dashboard/evaluation",
   },
 };

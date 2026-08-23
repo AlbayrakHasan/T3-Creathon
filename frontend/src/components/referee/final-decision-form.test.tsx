@@ -24,7 +24,7 @@ function renderForm(onSubmitDecision = jest.fn()) {
 }
 
 function scoreInput() {
-  return screen.getByLabelText(/final score/i) as HTMLInputElement;
+  return screen.getByLabelText(/final puan/i) as HTMLInputElement;
 }
 
 describe("FinalDecisionForm", () => {
@@ -32,14 +32,14 @@ describe("FinalDecisionForm", () => {
     renderForm();
 
     const panel = screen.getByTestId("ai-suggestion-panel");
-    expect(panel).toHaveTextContent(/ai 4th eye/i);
-    expect(panel).toHaveTextContent(/advisory/i);
+    expect(panel).toHaveTextContent(/ai dördüncü göz/i);
+    expect(panel).toHaveTextContent(/danışma/i);
     expect(screen.getByTestId("ai-suggested-score")).toHaveTextContent("88");
-    expect(screen.getByTestId("ai-suggested-outcome")).toHaveTextContent("Approve");
+    expect(screen.getByTestId("ai-suggested-outcome")).toHaveTextContent("Onayla");
 
     // The AI's numbers live outside the form; the form holds the referee's entry.
     const form = screen.getByTestId("final-decision-form");
-    expect(form).toHaveTextContent(/referee final input/i);
+    expect(form).toHaveTextContent(/hakem nihai girişi/i);
     expect(form).not.toContainElement(panel);
   });
 
@@ -47,7 +47,7 @@ describe("FinalDecisionForm", () => {
     renderForm();
 
     expect(scoreInput()).toHaveValue(suggestion.score);
-    expect(screen.getByRole("radio", { name: /approve/i })).toBeChecked();
+    expect(screen.getByRole("radio", { name: /onayla/i })).toBeChecked();
     expect(screen.getByTestId("agreement-indicator")).toBeInTheDocument();
     expect(screen.queryByTestId("override-indicator")).not.toBeInTheDocument();
     expect(screen.getByTestId("ai-choice-marker-approve")).toBeInTheDocument();
@@ -58,12 +58,12 @@ describe("FinalDecisionForm", () => {
 
     await user.clear(scoreInput());
     await user.type(scoreInput(), "57");
-    await user.click(screen.getByRole("radio", { name: /request revision/i }));
-    await user.type(screen.getByLabelText(/justification/i), JUSTIFICATION);
+    await user.click(screen.getByRole("radio", { name: /Revizyon İste/ }));
+    await user.type(screen.getByLabelText(/gerekçe/i), JUSTIFICATION);
 
-    expect(screen.getByTestId("override-indicator")).toHaveTextContent(/overriding ai/i);
+    expect(screen.getByTestId("override-indicator")).toHaveTextContent(/ai önerisi geçersiz/i);
 
-    await user.click(screen.getByRole("button", { name: /submit final decision/i }));
+    await user.click(screen.getByRole("button", { name: /nihai kararı gönder/i }));
 
     await waitFor(() => expect(onSubmitDecision).toHaveBeenCalledTimes(1));
     expect(onSubmitDecision).toHaveBeenCalledWith({
@@ -78,8 +78,8 @@ describe("FinalDecisionForm", () => {
   it("records agreement when the referee accepts the AI suggestion unchanged", async () => {
     const { user, onSubmitDecision } = renderForm();
 
-    await user.type(screen.getByLabelText(/justification/i), JUSTIFICATION);
-    await user.click(screen.getByRole("button", { name: /submit final decision/i }));
+    await user.type(screen.getByLabelText(/gerekçe/i), JUSTIFICATION);
+    await user.click(screen.getByRole("button", { name: /nihai kararı gönder/i }));
 
     await waitFor(() => expect(onSubmitDecision).toHaveBeenCalledTimes(1));
     expect(onSubmitDecision).toHaveBeenCalledWith(
@@ -94,9 +94,9 @@ describe("FinalDecisionForm", () => {
   it("flags an override when only the outcome differs from the AI suggestion", async () => {
     const { user, onSubmitDecision } = renderForm();
 
-    await user.click(screen.getByRole("radio", { name: /reject/i }));
-    await user.type(screen.getByLabelText(/justification/i), JUSTIFICATION);
-    await user.click(screen.getByRole("button", { name: /submit final decision/i }));
+    await user.click(screen.getByRole("radio", { name: /reddet/i }));
+    await user.type(screen.getByLabelText(/gerekçe/i), JUSTIFICATION);
+    await user.click(screen.getByRole("button", { name: /nihai kararı gönder/i }));
 
     await waitFor(() => expect(onSubmitDecision).toHaveBeenCalledTimes(1));
     expect(onSubmitDecision).toHaveBeenCalledWith(
@@ -113,13 +113,13 @@ describe("FinalDecisionForm", () => {
 
     await user.clear(scoreInput());
     await user.type(scoreInput(), "57");
-    await user.type(screen.getByLabelText(/justification/i), JUSTIFICATION);
-    await user.click(screen.getByRole("button", { name: /submit final decision/i }));
+    await user.type(screen.getByLabelText(/gerekçe/i), JUSTIFICATION);
+    await user.click(screen.getByRole("button", { name: /nihai kararı gönder/i }));
 
     const banner = await screen.findByTestId("decision-saved-banner");
     expect(banner).toHaveTextContent(REPORT_ID);
     expect(banner).toHaveTextContent("57/100");
-    expect(banner).toHaveTextContent(/ai suggestion overridden/i);
+    expect(banner).toHaveTextContent(/ai önerisi geçersiz kılındı/i);
   });
 
   it("restores the AI suggestion on reset while keeping the referee's justification", async () => {
@@ -127,16 +127,16 @@ describe("FinalDecisionForm", () => {
 
     await user.clear(scoreInput());
     await user.type(scoreInput(), "20");
-    await user.click(screen.getByRole("radio", { name: /reject/i }));
-    await user.type(screen.getByLabelText(/justification/i), JUSTIFICATION);
+    await user.click(screen.getByRole("radio", { name: /reddet/i }));
+    await user.type(screen.getByLabelText(/gerekçe/i), JUSTIFICATION);
     expect(screen.getByTestId("override-indicator")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /reset to ai suggestion/i }));
+    await user.click(screen.getByRole("button", { name: /ai önerisine sıfırla/i }));
 
     expect(scoreInput()).toHaveValue(suggestion.score);
-    expect(screen.getByRole("radio", { name: /approve/i })).toBeChecked();
+    expect(screen.getByRole("radio", { name: /onayla/i })).toBeChecked();
     expect(screen.getByTestId("agreement-indicator")).toBeInTheDocument();
-    expect(screen.getByLabelText(/justification/i)).toHaveValue(JUSTIFICATION);
+    expect(screen.getByLabelText(/gerekçe/i)).toHaveValue(JUSTIFICATION);
   });
 
   it("blocks submission and does not call the submit handler when the score is out of range", async () => {
@@ -144,10 +144,10 @@ describe("FinalDecisionForm", () => {
 
     await user.clear(scoreInput());
     await user.type(scoreInput(), "140");
-    await user.type(screen.getByLabelText(/justification/i), JUSTIFICATION);
-    await user.click(screen.getByRole("button", { name: /submit final decision/i }));
+    await user.type(screen.getByLabelText(/gerekçe/i), JUSTIFICATION);
+    await user.click(screen.getByRole("button", { name: /nihai kararı gönder/i }));
 
-    expect(await screen.findByRole("alert")).toHaveTextContent(/cannot exceed 100/i);
+    expect(await screen.findByRole("alert")).toHaveTextContent(/100'ü geçemez/i);
     expect(onSubmitDecision).not.toHaveBeenCalled();
   });
 
@@ -155,20 +155,20 @@ describe("FinalDecisionForm", () => {
     const { user, onSubmitDecision } = renderForm();
 
     await user.clear(scoreInput());
-    await user.type(screen.getByLabelText(/justification/i), JUSTIFICATION);
-    await user.click(screen.getByRole("button", { name: /submit final decision/i }));
+    await user.type(screen.getByLabelText(/gerekçe/i), JUSTIFICATION);
+    await user.click(screen.getByRole("button", { name: /nihai kararı gönder/i }));
 
-    expect(await screen.findByRole("alert")).toHaveTextContent(/final score/i);
+    expect(await screen.findByRole("alert")).toHaveTextContent(/final puanı/i);
     expect(onSubmitDecision).not.toHaveBeenCalled();
   });
 
   it("requires a written justification before recording the decision", async () => {
     const { user, onSubmitDecision } = renderForm();
 
-    await user.type(screen.getByLabelText(/justification/i), "Too short");
-    await user.click(screen.getByRole("button", { name: /submit final decision/i }));
+    await user.type(screen.getByLabelText(/gerekçe/i), "Too short");
+    await user.click(screen.getByRole("button", { name: /nihai kararı gönder/i }));
 
-    expect(await screen.findByRole("alert")).toHaveTextContent(/at least 20 characters/i);
+    expect(await screen.findByRole("alert")).toHaveTextContent(/en az 20 karakter/i);
     expect(onSubmitDecision).not.toHaveBeenCalled();
     expect(screen.queryByTestId("decision-saved-banner")).not.toBeInTheDocument();
   });
@@ -177,8 +177,8 @@ describe("FinalDecisionForm", () => {
     const user = userEvent.setup();
     render(<FinalDecisionForm reportId={REPORT_ID} suggestion={suggestion} />);
 
-    await user.type(screen.getByLabelText(/justification/i), JUSTIFICATION);
-    await user.click(screen.getByRole("button", { name: /submit final decision/i }));
+    await user.type(screen.getByLabelText(/gerekçe/i), JUSTIFICATION);
+    await user.click(screen.getByRole("button", { name: /nihai kararı gönder/i }));
 
     expect(await screen.findByTestId("decision-saved-banner")).toBeInTheDocument();
   });

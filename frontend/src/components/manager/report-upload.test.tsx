@@ -33,7 +33,7 @@ describe("ReportUpload", () => {
     render(<ReportUpload />);
 
     expect(
-      screen.getByRole("button", { name: /upload report files/i }),
+      screen.getByRole("button", { name: /rapor dosyalarını yükleyin/i }),
     ).toBeInTheDocument();
     expect(screen.queryByTestId("upload-list")).not.toBeInTheDocument();
   });
@@ -79,7 +79,7 @@ describe("ReportUpload", () => {
     });
 
     expect(item).toHaveAttribute("data-status", "success");
-    expect(screen.getByText(/uploaded/i)).toBeInTheDocument();
+    expect(screen.getByText(/yüklendi/i)).toBeInTheDocument();
     expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
     expect(onUploadComplete).toHaveBeenCalledWith("evaluation-report.pdf");
   });
@@ -109,7 +109,7 @@ describe("ReportUpload", () => {
 
     const item = screen.getByTestId("upload-item-notes.txt");
     expect(item).toHaveAttribute("data-status", "error");
-    expect(screen.getByRole("alert")).toHaveTextContent(/unsupported file type/i);
+    expect(screen.getByRole("alert")).toHaveTextContent(/desteklenmeyen dosya türü/i);
     expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
   });
 
@@ -124,7 +124,7 @@ describe("ReportUpload", () => {
     await dropFiles(dropzone, [file]);
     expect(screen.getByTestId("upload-item-notes.txt")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /remove notes.txt/i }));
+    await user.click(screen.getByRole("button", { name: /kaldır: notes\.txt/i }));
     expect(screen.queryByTestId("upload-item-notes.txt")).not.toBeInTheDocument();
   });
 

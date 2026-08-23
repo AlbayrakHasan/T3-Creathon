@@ -56,11 +56,11 @@ export function CriteriaTemplateForm({ onSaved }: CriteriaTemplateFormProps) {
     >
       <div className="mb-6">
         <h2 id={formHeadingId} className="text-xl font-bold text-foreground">
-          Criteria &amp; Template Definition
+          Kriter ve Şablon Tanımı
         </h2>
         <p className="mt-1 text-sm text-muted">
-          Define the evaluation metrics, category, and required report headings referees and the
-          AI evaluator will use for this competition.
+          Bu yarışma için hakemlerin ve AI değerlendiricisinin kullanacağı değerlendirme
+          metriklerini, kategoriyi ve zorunlu rapor başlıklarını tanımlayın.
         </p>
       </div>
 
@@ -70,11 +70,11 @@ export function CriteriaTemplateForm({ onSaved }: CriteriaTemplateFormProps) {
           data-testid="template-saved-banner"
           className="mb-6 flex items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"
         >
-          <span>Template &ldquo;{savedTemplateName}&rdquo; saved successfully.</span>
+          <span>&ldquo;{savedTemplateName}&rdquo; şablonu başarıyla kaydedildi.</span>
           <button
             type="button"
             onClick={() => setSavedTemplateName(null)}
-            aria-label="Dismiss saved template message"
+            aria-label="Kaydedilen şablon mesajını kapat"
             className="rounded-md p-1 text-emerald-700 transition hover:bg-emerald-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
           >
             ×
@@ -90,12 +90,12 @@ export function CriteriaTemplateForm({ onSaved }: CriteriaTemplateFormProps) {
       >
         <div className="flex flex-col gap-1.5">
           <label htmlFor="templateName" className="text-sm font-semibold text-foreground">
-            Template name
+            Şablon adı
           </label>
           <input
             id="templateName"
             type="text"
-            placeholder="e.g. Robotics & Automation — Final Round"
+            placeholder="örn. Robotik ve Otomasyon — Final Turu"
             aria-invalid={errors.templateName ? "true" : "false"}
             aria-describedby={errors.templateName ? "templateName-error" : undefined}
             {...register("templateName")}
@@ -110,7 +110,7 @@ export function CriteriaTemplateForm({ onSaved }: CriteriaTemplateFormProps) {
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="category" className="text-sm font-semibold text-foreground">
-            Category
+            Kategori
           </label>
           <select
             id="category"
@@ -121,7 +121,7 @@ export function CriteriaTemplateForm({ onSaved }: CriteriaTemplateFormProps) {
             className="rounded-lg border border-border bg-white px-3 py-2 text-sm text-foreground outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-500/30"
           >
             <option value="" disabled>
-              Select a category
+              Bir kategori seçin
             </option>
             {CATEGORY_OPTIONS.map((category) => (
               <option key={category} value={category}>
@@ -138,13 +138,13 @@ export function CriteriaTemplateForm({ onSaved }: CriteriaTemplateFormProps) {
 
         <fieldset className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <legend className="text-sm font-semibold text-foreground">Evaluation metrics</legend>
+            <legend className="text-sm font-semibold text-foreground">Değerlendirme metrikleri</legend>
             <button
               type="button"
               onClick={() => metricsArray.append({ name: "", weight: 0 })}
               className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-brand-700 transition hover:border-brand-300 hover:bg-brand-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
             >
-              + Add metric
+              + Metrik ekle
             </button>
           </div>
 
@@ -156,12 +156,12 @@ export function CriteriaTemplateForm({ onSaved }: CriteriaTemplateFormProps) {
                 <div key={field.id} className="flex items-start gap-2">
                   <div className="flex flex-1 flex-col gap-1">
                     <label htmlFor={`metrics.${index}.name`} className="sr-only">
-                      Metric {index + 1} name
+                      Metrik {index + 1} adı
                     </label>
                     <input
                       id={`metrics.${index}.name`}
                       type="text"
-                      placeholder="e.g. Technical feasibility"
+                      placeholder="örn. Teknik uygulanabilirlik"
                       aria-invalid={nameError ? "true" : "false"}
                       aria-describedby={nameError ? `metrics.${index}.name-error` : undefined}
                       {...register(`metrics.${index}.name` as const)}
@@ -180,7 +180,7 @@ export function CriteriaTemplateForm({ onSaved }: CriteriaTemplateFormProps) {
 
                   <div className="flex w-28 flex-col gap-1">
                     <label htmlFor={`metrics.${index}.weight`} className="sr-only">
-                      Metric {index + 1} weight percentage
+                      Metrik {index + 1} ağırlık yüzdesi
                     </label>
                     <div className="relative">
                       <input
@@ -214,10 +214,10 @@ export function CriteriaTemplateForm({ onSaved }: CriteriaTemplateFormProps) {
                     type="button"
                     onClick={() => metricsArray.remove(index)}
                     disabled={metricsArray.fields.length === 1}
-                    aria-label={`Remove metric ${index + 1}`}
+                    aria-label={`Metrik ${index + 1} kaldır`}
                     className="mt-0.5 rounded-lg border border-border px-2.5 py-2 text-xs font-semibold text-muted transition hover:border-red-300 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-border disabled:hover:text-muted"
                   >
-                    Remove
+                    Kaldır
                   </button>
                 </div>
               );
@@ -233,13 +233,13 @@ export function CriteriaTemplateForm({ onSaved }: CriteriaTemplateFormProps) {
 
         <fieldset className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <legend className="text-sm font-semibold text-foreground">Required headings</legend>
+            <legend className="text-sm font-semibold text-foreground">Zorunlu başlıklar</legend>
             <button
               type="button"
               onClick={() => headingsArray.append({ value: "" })}
               className="rounded-lg border border-border px-3 py-1.5 text-xs font-semibold text-brand-700 transition hover:border-brand-300 hover:bg-brand-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
             >
-              + Add heading
+              + Başlık ekle
             </button>
           </div>
 
@@ -250,12 +250,12 @@ export function CriteriaTemplateForm({ onSaved }: CriteriaTemplateFormProps) {
                 <div key={field.id} className="flex items-start gap-2">
                   <div className="flex flex-1 flex-col gap-1">
                     <label htmlFor={`requiredHeadings.${index}.value`} className="sr-only">
-                      Required heading {index + 1}
+                      Zorunlu başlık {index + 1}
                     </label>
                     <input
                       id={`requiredHeadings.${index}.value`}
                       type="text"
-                      placeholder="e.g. Methodology"
+                      placeholder="örn. Yöntem"
                       aria-invalid={headingError ? "true" : "false"}
                       aria-describedby={
                         headingError ? `requiredHeadings.${index}.value-error` : undefined
@@ -278,10 +278,10 @@ export function CriteriaTemplateForm({ onSaved }: CriteriaTemplateFormProps) {
                     type="button"
                     onClick={() => headingsArray.remove(index)}
                     disabled={headingsArray.fields.length === 1}
-                    aria-label={`Remove required heading ${index + 1}`}
+                    aria-label={`Zorunlu başlık ${index + 1} kaldır`}
                     className="mt-0.5 rounded-lg border border-border px-2.5 py-2 text-xs font-semibold text-muted transition hover:border-red-300 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-border disabled:hover:text-muted"
                   >
-                    Remove
+                    Kaldır
                   </button>
                 </div>
               );
@@ -301,7 +301,7 @@ export function CriteriaTemplateForm({ onSaved }: CriteriaTemplateFormProps) {
             disabled={isSubmitting}
             className="rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Save template
+            Şablonu kaydet
           </button>
         </div>
       </form>

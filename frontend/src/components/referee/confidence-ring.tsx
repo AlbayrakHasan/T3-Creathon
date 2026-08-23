@@ -18,7 +18,7 @@ const TONE_TEXT: Record<CheckTone, string> = {
 };
 
 interface ConfidenceRingProps {
-  /** Accessible name for the meter, e.g. "Language / Template Match". */
+  /** Accessible name for the meter, e.g. "Dil / Şablon Uyumu". */
   label: string;
   /** 0–100. Drives both the arc length and the centred readout. */
   value: number;

@@ -25,16 +25,16 @@ export function DashboardShell({ role, children }: DashboardShellProps) {
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-brand-700">
-              AI-Assisted Evaluation System
+              AI Destekli Değerlendirme Sistemi
             </p>
-            <h1 className="text-lg font-bold text-foreground">{definition.label} Dashboard</h1>
+            <h1 className="text-lg font-bold text-foreground">{definition.label} Paneli</h1>
           </div>
           <button
             type="button"
             onClick={handleLogout}
             className="rounded-lg border border-border px-4 py-2 text-sm font-semibold text-muted transition hover:border-brand-300 hover:text-brand-700"
           >
-            Log out
+            Çıkış yap
           </button>
         </div>
       </header>

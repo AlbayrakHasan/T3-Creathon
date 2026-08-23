@@ -58,10 +58,10 @@ describe("RefereeReportDetail — AI Analysis Report", () => {
   it("covers all four required evaluation dimensions", () => {
     render(<RefereeReportDetail report={report(ANALYZED_ID)} analysis={analysis(ANALYZED_ID)} />);
 
-    expect(screen.getByRole("meter", { name: /language \/ template match/i })).toBeInTheDocument();
-    expect(screen.getByRole("meter", { name: /content \/ heading check/i })).toBeInTheDocument();
-    expect(screen.getByRole("meter", { name: /category match/i })).toBeInTheDocument();
-    expect(screen.getByRole("meter", { name: /similarity \/ plagiarism/i })).toBeInTheDocument();
+    expect(screen.getByRole("meter", { name: /dil \/ şablon uyumu/i })).toBeInTheDocument();
+    expect(screen.getByRole("meter", { name: /İçerik \/ Başlık Kontrolü/ })).toBeInTheDocument();
+    expect(screen.getByRole("meter", { name: /kategori uyumu/i })).toBeInTheDocument();
+    expect(screen.getByRole("meter", { name: /Benzerlik \/ İntihal/ })).toBeInTheDocument();
   });
 
   it("shows the numeric score and summary text inside each check card", () => {
@@ -84,7 +84,7 @@ describe("RefereeReportDetail — AI Analysis Report", () => {
     render(<RefereeReportDetail report={report(ANALYZED_ID)} analysis={analysis(ANALYZED_ID)} />);
 
     const badge = screen.getByTestId("ai-check-pill-languageTemplate");
-    expect(badge).toHaveTextContent(/high confidence/i);
+    expect(badge).toHaveTextContent(/yüksek güven/i);
     expect(badge).toHaveAttribute("data-tone", "positive");
     expect(screen.getByTestId("ai-check-pill-categoryMatch")).toHaveAttribute(
       "data-tone",
@@ -98,7 +98,7 @@ describe("RefereeReportDetail — AI Analysis Report", () => {
       <RefereeReportDetail report={report(BORDERLINE_ID)} analysis={analysis(BORDERLINE_ID)} />,
     );
     const caution = screen.getByTestId("ai-check-pill-languageTemplate");
-    expect(caution).toHaveTextContent(/needs review/i);
+    expect(caution).toHaveTextContent(/gözden geçirilmeli/i);
     expect(caution).toHaveAttribute("data-tone", "caution");
     expect(screen.getByTestId("ai-check-pill-contentHeading")).toHaveAttribute(
       "data-tone",
@@ -109,7 +109,7 @@ describe("RefereeReportDetail — AI Analysis Report", () => {
     // RPT-2026-009 drops below the caution floor entirely: languageTemplate 58.
     render(<RefereeReportDetail report={report(AT_RISK_ID)} analysis={analysis(AT_RISK_ID)} />);
     const weak = screen.getByTestId("ai-check-pill-languageTemplate");
-    expect(weak).toHaveTextContent(/low confidence/i);
+    expect(weak).toHaveTextContent(/kritik/i);
     expect(weak).toHaveAttribute("data-tone", "critical");
   });
 
@@ -120,14 +120,14 @@ describe("RefereeReportDetail — AI Analysis Report", () => {
 
     // 8% similarity is a good outcome, so it reads positive — not critical.
     const clean = screen.getByTestId("ai-check-pill-similarity");
-    expect(clean).toHaveTextContent(/original/i);
+    expect(clean).toHaveTextContent(/özgün/i);
     expect(clean).toHaveAttribute("data-tone", "positive");
     unmount();
 
     // 47% similarity is a bad outcome despite being the "higher" number.
     render(<RefereeReportDetail report={report(AT_RISK_ID)} analysis={analysis(AT_RISK_ID)} />);
     const risky = screen.getByTestId("ai-check-pill-similarity");
-    expect(risky).toHaveTextContent(/high risk/i);
+    expect(risky).toHaveTextContent(/yüksek risk/i);
     expect(risky).toHaveAttribute("data-tone", "critical");
   });
 
@@ -151,7 +151,7 @@ describe("RefereeReportDetail — AI Analysis Report", () => {
     };
     render(<RefereeReportDetail report={report(ANALYZED_ID)} analysis={skewed} />);
 
-    expect(screen.getByRole("meter", { name: /category match/i })).toHaveAttribute(
+    expect(screen.getByRole("meter", { name: /kategori uyumu/i })).toHaveAttribute(
       "aria-valuenow",
       "100",
     );
@@ -160,7 +160,7 @@ describe("RefereeReportDetail — AI Analysis Report", () => {
   it("shows a pending state, and no decision form, when analysis has not completed", () => {
     render(<RefereeReportDetail report={report(PENDING_ID)} analysis={null} />);
 
-    expect(screen.getByTestId("analysis-pending")).toHaveTextContent(/analysis in progress/i);
+    expect(screen.getByTestId("analysis-pending")).toHaveTextContent(/analiz devam ediyor/i);
     expect(screen.queryByTestId("ai-analysis-report")).not.toBeInTheDocument();
     expect(screen.queryByTestId("final-decision-form")).not.toBeInTheDocument();
     expect(screen.queryAllByRole("meter")).toHaveLength(0);
@@ -169,7 +169,7 @@ describe("RefereeReportDetail — AI Analysis Report", () => {
   it("links back to the referee report list", () => {
     render(<RefereeReportDetail report={report(ANALYZED_ID)} analysis={analysis(ANALYZED_ID)} />);
 
-    expect(screen.getByRole("link", { name: /back to all reports/i })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /tüm raporlara dön/i })).toHaveAttribute(
       "href",
       "/dashboard/referee",
     );

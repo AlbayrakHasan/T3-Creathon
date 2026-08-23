@@ -7,7 +7,7 @@ describe("RefereeDashboard", () => {
   it("renders the mock list of evaluation reports", () => {
     render(<RefereeDashboard initialReports={MOCK_REPORTS} />);
 
-    const list = screen.getByRole("listbox", { name: /evaluation reports/i });
+    const list = screen.getByRole("listbox", { name: /değerlendirme raporları/i });
     const options = within(list).getAllByRole("option");
     expect(options).toHaveLength(MOCK_REPORTS.length);
 
@@ -28,7 +28,7 @@ describe("RefereeDashboard", () => {
   it("shows an empty state in the sidebar when there are no reports", () => {
     render(<RefereeDashboard initialReports={[]} />);
 
-    expect(screen.getByTestId("report-list-empty")).toHaveTextContent(/no reports yet/i);
+    expect(screen.getByTestId("report-list-empty")).toHaveTextContent(/henüz rapor yok/i);
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
 
@@ -37,9 +37,9 @@ describe("RefereeDashboard", () => {
 
     expect(screen.getByTestId("report-list-skeleton")).toBeInTheDocument();
     expect(screen.getByTestId("report-detail-skeleton")).toBeInTheDocument();
-    expect(screen.queryByRole("listbox", { name: /evaluation reports/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("listbox", { name: /değerlendirme raporları/i })).not.toBeInTheDocument();
 
-    const list = await screen.findByRole("listbox", { name: /evaluation reports/i });
+    const list = await screen.findByRole("listbox", { name: /değerlendirme raporları/i });
     expect(within(list).getAllByRole("option").length).toBeGreaterThan(0);
     expect(screen.queryByTestId("report-list-skeleton")).not.toBeInTheDocument();
   });

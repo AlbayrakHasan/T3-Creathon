@@ -34,9 +34,9 @@ export function RefereeDashboard({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-bold text-foreground">Evaluation Reports</h2>
+        <h2 className="text-xl font-bold text-foreground">Değerlendirme Raporları</h2>
         <p className="mt-1 text-sm text-muted">
-          Review submitted projects and track AI-assisted evaluation status.
+          Gönderilen projeleri inceleyin ve AI destekli değerlendirme durumunu takip edin.
         </p>
       </div>
 
@@ -44,9 +44,7 @@ export function RefereeDashboard({
         <aside className="w-full overflow-hidden rounded-2xl border border-border bg-surface shadow-sm lg:w-96 lg:shrink-0">
           <div className="border-b border-border px-4 py-3">
             <p className="text-xs font-semibold uppercase tracking-wide text-muted">
-              {reports
-                ? `${reports.length} report${reports.length === 1 ? "" : "s"}`
-                : "Loading reports"}
+              {reports ? `${reports.length} rapor` : "Raporlar yükleniyor"}
             </p>
           </div>
           {reports === null ? (

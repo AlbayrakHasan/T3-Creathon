@@ -29,8 +29,8 @@ export function ReportList({ reports, selectedId, onSelect }: ReportListProps) {
             <path d="M14 3v5h5" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
           </svg>
         </span>
-        <p className="text-sm font-semibold text-foreground">No reports yet</p>
-        <p className="text-xs text-muted">Submitted evaluation reports will appear here.</p>
+        <p className="text-sm font-semibold text-foreground">Henüz rapor yok</p>
+        <p className="text-xs text-muted">Gönderilen değerlendirme raporları burada görünecek.</p>
       </div>
     );
   }
@@ -43,7 +43,7 @@ export function ReportList({ reports, selectedId, onSelect }: ReportListProps) {
   }
 
   return (
-    <ul role="listbox" aria-label="Evaluation reports" className="divide-y divide-border">
+    <ul role="listbox" aria-label="Değerlendirme Raporları" className="divide-y divide-border">
       {reports.map((report) => {
         const isSelected = report.reportId === selectedId;
         return (

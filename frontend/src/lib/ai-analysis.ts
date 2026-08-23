@@ -29,34 +29,34 @@ export interface AiCheckDefinition {
 export const CHECK_DEFINITIONS: Record<AiCheckKey, AiCheckDefinition> = {
   languageTemplate: {
     key: "languageTemplate",
-    label: "Language / Template Match",
-    shortLabel: "Language & Template",
+    label: "Dil / Şablon Uyumu",
+    shortLabel: "Dil ve Şablon",
     description:
-      "How closely the submission follows the required report template, tone, and language rules.",
+      "Başvurunun gerekli rapor şablonuna, üsluba ve dil kurallarına ne kadar uyduğunu gösterir.",
     polarity: "positive",
   },
   contentHeading: {
     key: "contentHeading",
-    label: "Content / Heading Check",
-    shortLabel: "Content & Headings",
+    label: "İçerik / Başlık Kontrolü",
+    shortLabel: "İçerik ve Başlıklar",
     description:
-      "Whether every mandatory heading is present and carries substantive content beneath it.",
+      "Tüm zorunlu başlıkların bulunup bulunmadığını ve altlarında yeterli içerik olup olmadığını gösterir.",
     polarity: "positive",
   },
   categoryMatch: {
     key: "categoryMatch",
-    label: "Category Match",
-    shortLabel: "Category Match",
+    label: "Kategori Uyumu",
+    shortLabel: "Kategori Uyumu",
     description:
-      "How well the project's subject matter aligns with the category it was submitted under.",
+      "Projenin konusunun başvurulan kategoriyle ne kadar uyumlu olduğunu gösterir.",
     polarity: "positive",
   },
   similarity: {
     key: "similarity",
-    label: "Similarity / Plagiarism",
-    shortLabel: "Similarity",
+    label: "Benzerlik / İntihal",
+    shortLabel: "Benzerlik",
     description:
-      "Overlap detected against prior submissions and public sources. Lower is better.",
+      "Önceki başvurular ve kamuya açık kaynaklarla tespit edilen örtüşme oranı. Düşük olması daha iyidir.",
     polarity: "negative",
   },
 };
@@ -103,14 +103,14 @@ export function getCheckTone(score: number, polarity: CheckPolarity): CheckTone 
 
 const TONE_LABELS: Record<CheckPolarity, Record<CheckTone, string>> = {
   positive: {
-    positive: "High confidence",
-    caution: "Needs review",
-    critical: "Low confidence",
+    positive: "Yüksek güven",
+    caution: "Gözden geçirilmeli",
+    critical: "Kritik",
   },
   negative: {
-    positive: "Original",
-    caution: "Needs review",
-    critical: "High risk",
+    positive: "Özgün",
+    caution: "Gözden geçirilmeli",
+    critical: "Yüksek risk",
   },
 };
 
@@ -148,35 +148,35 @@ export const MOCK_ANALYSES: Record<string, AiAnalysis> = {
     results: {
       languageTemplate: {
         score: 94,
-        summary: "Follows the official template with consistent academic register.",
+        summary: "Resmi şablonu tutarlı bir akademik üslupla takip ediyor.",
         findings: [
-          "All 6 template sections present in the required order.",
-          "Citation style matches the competition handbook (IEEE).",
-          "Two figure captions are missing numbering.",
+          "6 şablon bölümünün tamamı gerekli sırada mevcut.",
+          "Atıf stili yarışma kılavuzuyla (IEEE) uyumlu.",
+          "İki şekil altyazısında numaralandırma eksik.",
         ],
       },
       contentHeading: {
         score: 88,
-        summary: "Every mandatory heading is present and substantively filled in.",
+        summary: "Tüm zorunlu başlıklar mevcut ve içerik bakımından yeterli şekilde doldurulmuş.",
         findings: [
-          "Abstract, Methodology, Results, and Discussion all exceed the minimum length.",
-          "“Limitations” section is present but under 100 words.",
+          "Özet, Yöntem, Bulgular ve Tartışma bölümlerinin tamamı minimum uzunluğu aşıyor.",
+          "“Kısıtlamalar” bölümü mevcut ama 100 kelimenin altında.",
         ],
       },
       categoryMatch: {
         score: 91,
-        summary: "Strongly aligned with the AI & Machine Learning category.",
+        summary: "Yapay Zeka ve Makine Öğrenmesi kategorisiyle güçlü şekilde uyumlu.",
         findings: [
-          "Core contribution is a transformer-based gesture recognition model.",
-          "Hardware discussion is secondary and does not shift the category.",
+          "Ana katkı, transformer tabanlı bir hareket tanıma modeli.",
+          "Donanım tartışması ikincil düzeyde ve kategoriyi değiştirmiyor.",
         ],
       },
       similarity: {
         score: 8,
-        summary: "No meaningful overlap with prior submissions or public sources.",
+        summary: "Önceki başvurular veya kamuya açık kaynaklarla anlamlı bir örtüşme yok.",
         findings: [
-          "Highest single-source overlap is 3% and limited to standard definitions.",
-          "No matches against the 2025 submission corpus.",
+          "En yüksek tekil kaynak örtüşmesi %3 ve standart tanımlarla sınırlı.",
+          "2025 başvuru havuzuyla eşleşme bulunamadı.",
         ],
       },
     },
@@ -184,7 +184,7 @@ export const MOCK_ANALYSES: Record<string, AiAnalysis> = {
       score: 88,
       outcome: "approve",
       rationale:
-        "Template compliance and originality are both strong. The only soft spot is a thin Limitations section, which does not warrant a revision cycle.",
+        "Şablon uyumu ve özgünlük her ikisi de güçlü. Tek zayıf nokta, revizyon turu gerektirmeyecek kadar ince olan Kısıtlamalar bölümü.",
     },
   },
   "RPT-2026-011": {
@@ -194,36 +194,36 @@ export const MOCK_ANALYSES: Record<string, AiAnalysis> = {
     results: {
       languageTemplate: {
         score: 72,
-        summary: "Template broadly followed, but formatting drifts in later sections.",
+        summary: "Şablon genel olarak takip edilmiş, ancak ilerleyen bölümlerde biçim kayması var.",
         findings: [
-          "Appendix uses an unapproved two-column layout.",
-          "Mixed citation styles between sections 3 and 5.",
-          "Tone shifts to marketing language in the Conclusion.",
+          "Ek bölümünde onaylanmamış iki sütunlu bir yerleşim kullanılmış.",
+          "3. ve 5. bölümler arasında karışık atıf stilleri var.",
+          "Sonuç bölümünde üslup pazarlama diline kayıyor.",
         ],
       },
       contentHeading: {
         score: 61,
-        summary: "Two mandatory headings are missing from the submission.",
+        summary: "Başvuruda iki zorunlu başlık eksik.",
         findings: [
-          "“Risk Assessment” heading not found.",
-          "“Data Sources” heading not found.",
-          "Results section contains content that belongs under Discussion.",
+          "“Risk Değerlendirmesi” başlığı bulunamadı.",
+          "“Veri Kaynakları” başlığı bulunamadı.",
+          "Bulgular bölümü, aslında Tartışma altında olması gereken içerik barındırıyor.",
         ],
       },
       categoryMatch: {
         score: 86,
-        summary: "Fits the FinTech category, with some regulatory-policy overlap.",
+        summary: "Finans Teknolojisi kategorisine uyuyor, kısmi düzenleyici/politika örtüşmesi var.",
         findings: [
-          "Micro-lending mechanics are the primary contribution.",
-          "A third of the report addresses compliance rather than technology.",
+          "Mikro kredi mekanikleri ana katkıyı oluşturuyor.",
+          "Raporun üçte biri teknolojiden çok uyumluluk konularını ele alıyor.",
         ],
       },
       similarity: {
         score: 28,
-        summary: "Moderate overlap traced to the team's own earlier white paper.",
+        summary: "Takımın kendi önceki teknik raporuyla orta düzeyde örtüşme tespit edildi.",
         findings: [
-          "22% overlap with a publicly published white paper by the same authors.",
-          "6% overlap with standard regulatory boilerplate.",
+          "Aynı yazarlara ait, kamuya açık yayınlanmış bir teknik raporla %22 örtüşme.",
+          "Standart düzenleyici kalıp metinlerle %6 örtüşme.",
         ],
       },
     },
@@ -231,7 +231,7 @@ export const MOCK_ANALYSES: Record<string, AiAnalysis> = {
       score: 64,
       outcome: "revise",
       rationale:
-        "Two mandatory headings are absent and self-overlap is above the comfort threshold. A revision cycle should resolve both without penalising a solid concept.",
+        "İki zorunlu başlık eksik ve kendi kendine örtüşme kabul edilebilir eşiğin üzerinde. Bir revizyon turu, sağlam bir konsepti cezalandırmadan her ikisini de çözebilir.",
     },
   },
   "RPT-2026-009": {
@@ -241,35 +241,35 @@ export const MOCK_ANALYSES: Record<string, AiAnalysis> = {
     results: {
       languageTemplate: {
         score: 58,
-        summary: "Substantial deviation from the required template structure.",
+        summary: "Gerekli şablon yapısından ciddi bir sapma var.",
         findings: [
-          "Report submitted as a design document rather than the evaluation template.",
-          "No abstract present.",
-          "Section numbering does not match the handbook.",
+          "Rapor, değerlendirme şablonu yerine bir tasarım belgesi olarak sunulmuş.",
+          "Özet bölümü bulunmuyor.",
+          "Bölüm numaralandırması kılavuzla uyuşmuyor.",
         ],
       },
       contentHeading: {
         score: 49,
-        summary: "Fewer than half of the mandatory headings could be located.",
+        summary: "Zorunlu başlıkların yarısından azı bulunabildi.",
         findings: [
-          "Only “Introduction” and “Results” matched the required set.",
-          "Methodology content is distributed across unlabelled prose.",
+          "Yalnızca “Giriş” ve “Bulgular” zorunlu setle eşleşti.",
+          "Yöntem içeriği, başlıksız düz metin içine dağılmış durumda.",
         ],
       },
       categoryMatch: {
         score: 93,
-        summary: "Unambiguously a Game Design submission.",
+        summary: "Tartışmasız bir şekilde Oyun Tasarımı başvurusu.",
         findings: [
-          "Procedural generation and level pacing are the central topics.",
-          "No content suggesting a different category.",
+          "Prosedürel üretim ve seviye temposu ana konuları oluşturuyor.",
+          "Farklı bir kategoriye işaret eden içerik yok.",
         ],
       },
       similarity: {
         score: 47,
-        summary: "High overlap with a widely circulated tutorial series.",
+        summary: "Yaygın olarak dolaşan bir eğitim serisiyle yüksek örtüşme var.",
         findings: [
-          "38% overlap with a public procedural-generation tutorial.",
-          "9% overlap with a 2025 submission from a different team.",
+          "Kamuya açık bir prosedürel üretim eğitim seriyle %38 örtüşme.",
+          "Farklı bir takımın 2025 başvurusuyla %9 örtüşme.",
         ],
       },
     },
@@ -277,7 +277,7 @@ export const MOCK_ANALYSES: Record<string, AiAnalysis> = {
       score: 41,
       outcome: "reject",
       rationale:
-        "Similarity is far above threshold and the template was not used. Category fit alone is not sufficient to advance the submission.",
+        "Benzerlik eşiğin çok üzerinde ve şablon kullanılmamış. Kategori uyumu tek başına başvurunun ilerlemesi için yeterli değil.",
     },
   },
 };

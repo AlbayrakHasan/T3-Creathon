@@ -16,7 +16,7 @@ describe("CompetitorDashboard", () => {
     expect(within(status).getByRole("heading", { level: 1 })).toHaveTextContent(
       summary.projectName,
     );
-    expect(screen.getByTestId("outcome-badge")).toHaveTextContent("Advanced");
+    expect(screen.getByTestId("outcome-badge")).toHaveTextContent("İlerledi");
     expect(screen.getByTestId("status-headline")).toHaveTextContent(summary.headline);
     expect(status).toHaveTextContent(String(summary.finalScore));
     expect(status).toHaveTextContent(summary.category);
@@ -26,7 +26,7 @@ describe("CompetitorDashboard", () => {
     render(<CompetitorDashboard />);
 
     const section = screen.getByTestId("strengths-section");
-    expect(within(section).getByRole("heading", { name: "Strengths" })).toBeInTheDocument();
+    expect(within(section).getByRole("heading", { name: "Güçlü Yönler" })).toBeInTheDocument();
     expect(within(section).getAllByRole("listitem")).toHaveLength(summary.strengths.length);
 
     for (const point of summary.strengths) {
@@ -40,7 +40,7 @@ describe("CompetitorDashboard", () => {
 
     const section = screen.getByTestId("improvements-section");
     expect(
-      within(section).getByRole("heading", { name: "Areas for Improvement" }),
+      within(section).getByRole("heading", { name: "Geliştirilmesi Gereken Alanlar" }),
     ).toBeInTheDocument();
     expect(within(section).getAllByRole("listitem")).toHaveLength(
       summary.improvements.length,

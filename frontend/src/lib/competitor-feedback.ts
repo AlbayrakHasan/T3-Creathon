@@ -10,9 +10,9 @@ export interface FeedbackPoint {
  * referee-side {@link import("./final-decision").DECISION_LABELS}.
  */
 export const COMPETITOR_OUTCOME_LABELS: Record<DecisionOutcome, string> = {
-  approve: "Advanced",
-  revise: "Revision Requested",
-  reject: "Not Advancing",
+  approve: "İlerledi",
+  revise: "Revizyon İstendi",
+  reject: "İlerlemedi",
 };
 
 /**
@@ -86,7 +86,7 @@ export function toCompetitorSummary(
 export const MOCK_PUBLISHED_EVALUATION: PublishedEvaluation = {
   reportId: "RPT-2026-013",
   projectName: "NeuroLingua — Real-Time Sign Language Translator",
-  category: "AI & Machine Learning",
+  category: "Yapay Zeka ve Makine Öğrenmesi",
   submittedAt: "2026-08-17",
   reviewedAt: "2026-08-19",
   outcome: "approve",
@@ -94,44 +94,44 @@ export const MOCK_PUBLISHED_EVALUATION: PublishedEvaluation = {
 
   refereeName: "Dr. Elif Karaca",
   refereeNotes:
-    "Internal: agreed with the engine on template compliance; docked two points for the thin Limitations section.",
+    "Dahili not: motorun şablon uyumu değerlendirmesine katıldım; zayıf Kısıtlamalar bölümü nedeniyle iki puan kırdım.",
   aiSuggestedScore: 88,
   aiSuggestedOutcome: "approve",
   similarityScore: 8,
 
   message: {
-    headline: "Your submission advances to the final round.",
+    headline: "Başvurunuz final turuna yükseldi.",
     strengths: [
       {
-        title: "Clear, well-structured reporting",
+        title: "Açık ve iyi yapılandırılmış raporlama",
         detail:
-          "Your report followed the competition template closely and every required section was easy to locate. Reviewers highlighted how quickly they could find your methodology.",
+          "Raporunuz yarışma şablonunu yakından takip etti ve tüm zorunlu bölümler kolayca bulunabildi. Değerlendiriciler yöntem bölümünüzü ne kadar hızlı bulabildiklerini özellikle belirtti.",
       },
       {
-        title: "Original, well-cited work",
+        title: "Özgün ve iyi kaynak gösterilmiş çalışma",
         detail:
-          "Originality checks came back clean. Your sources were properly attributed and the contribution reads as genuinely your own.",
+          "Özgünlük kontrolleri temiz çıktı. Kaynaklarınız doğru şekilde belirtilmiş ve katkı gerçekten size ait görünüyor.",
       },
       {
-        title: "Strong fit for your category",
+        title: "Kategorinize güçlü uyum",
         detail:
-          "The gesture-recognition model sits squarely in AI & Machine Learning, and your framing of the problem made that fit obvious to reviewers.",
+          "Hareket tanıma modeli tam olarak Yapay Zeka ve Makine Öğrenmesi kategorisine giriyor ve probleminizi ele alış biçiminiz bu uyumu değerlendiricilere açıkça gösterdi.",
       },
     ],
     improvements: [
       {
-        title: "Expand the Limitations section",
+        title: "Kısıtlamalar bölümünü genişletin",
         detail:
-          "This section was present but brief. Naming the conditions where your model underperforms — low light, unfamiliar signers — would strengthen the work considerably.",
+          "Bu bölüm mevcuttu ancak kısaydı. Modelinizin daha düşük performans gösterdiği koşulları (düşük ışık, tanımadığı işaretleyiciler gibi) belirtmek çalışmanızı önemli ölçüde güçlendirecektir.",
       },
       {
-        title: "Number your figure captions",
+        title: "Şekil altyazılarını numaralandırın",
         detail:
-          "Two figures were referenced in the text without matching caption numbers, which made them harder to follow.",
+          "Metinde iki şekle, eşleşen altyazı numaraları olmadan atıfta bulunulmuş; bu da takip etmeyi zorlaştırdı.",
       },
     ],
     nextStep:
-      "No action is required from you right now. The finals schedule will be shared through this dashboard once judging panels are confirmed.",
+      "Şu anda sizden herhangi bir işlem yapmanız beklenmiyor. Jüri panelleri onaylandığında final takvimi bu panel üzerinden paylaşılacaktır.",
   },
 };
 

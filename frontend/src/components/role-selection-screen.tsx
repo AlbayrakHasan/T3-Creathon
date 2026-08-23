@@ -27,19 +27,19 @@ export function RoleSelectionScreen() {
       <div className="w-full max-w-3xl">
         <div className="mb-10 text-center">
           <span className="inline-flex items-center rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold uppercase tracking-wide text-brand-700">
-            AI-Assisted Evaluation System
+            AI Destekli Değerlendirme Sistemi
           </span>
           <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-            Sign in to continue
+            Devam etmek için giriş yapın
           </h1>
           <p className="mt-3 text-sm text-muted sm:text-base">
-            Select your role to access your dedicated workspace.
+            Kendi çalışma alanınıza erişmek için rolünüzü seçin.
           </p>
         </div>
 
         <div
           role="radiogroup"
-          aria-label="Select your role"
+          aria-label="Rolünüzü seçin"
           className="grid grid-cols-1 gap-4 sm:grid-cols-2"
         >
           {ROLES.map((role) => {
