@@ -83,9 +83,27 @@ for dosya, beklenen_eksik in check_cases.items():
         beklenen_eksik in sonuc.get("eksik_basliklar", []),
     )
 
-# KTR_13 gercekte Ingilizce yazilmis bir rapor - dil tespiti bunu yakalamali
+# KTR_13: DUZELTME - bu rapor gercekte tamamen Turkce (icerigi bizzat kontrol
+# edildi). Ilk versiyonda "dil=en" cikmisti ama bu, detect_language'in ilk
+# 1000 karakteri kullanmasindan kaynaklanan YANLIS bir tespitti (Icindekiler +
+# kisaltma listesindeki Ingilizce terimler langdetect'i yaniltmisti). Pencere
+# duzeltmesinden sonra dogru sekilde 'tr' cikiyor - regresyon testi:
 sonuc = analyze_document(str(ktr_dir / "KTR_13_R1bVfdsapUpMaHHTj8runrvxXZPt1Mr4.pdf"), gercek_rules)
-check("KTR_13: dil 'en' olarak tespit ediliyor (yanlis dil senaryosu)", sonuc.get("dil") == "en")
+check("KTR_13: aslinda Turkce, dogru tespit ediliyor (dil penceresi duzeltmesi)", sonuc.get("dil") == "tr")
+
+# KTR_08: GERCEK bir sinir durumu - bu PDF'in font kodlamasi bozuk (Word/PDF
+# donusturucu hatasi), bazi "İ" harfleri "Ġ" olarak cikiyor. Bu bizim kodun
+# hatasi degil, kaynak dosyanin kendi sorunu - ama analyze_document yine de
+# cokmemeli, sadece yanlis/belirsiz bir dil sonucu dondurebilir.
+sonuc = analyze_document(str(ktr_dir / "KTR_08_PhJX36PYmJso87uscHkQSwbe2P7HyFbs.pdf"), gercek_rules)
+check("KTR_08: bozuk font kodlamasina ragmen cokmuyor, bir sonuc donuyor", "hata" not in sonuc)
+
+# 9. Yeni alanlar: dil_uygun, sayfa_sayisi/sayfa_uygun, icerik_yetersiz_basliklar
+sonuc = analyze_document(str(ktr_dir / "KTR_00_YXpGnt7IevOLKmM75xNlXyQlgHmz2bTM.pdf"), gercek_rules)
+check("dil_uygun alani var ve True (tr kabul edilen dil)", sonuc.get("dil_uygun") is True)
+check("sayfa_sayisi sayi olarak donuyor", isinstance(sonuc.get("sayfa_sayisi"), int) and sonuc["sayfa_sayisi"] > 0)
+check("sayfa_uygun True (8-18 sayfa araliginda)", sonuc.get("sayfa_uygun") is True)
+check("icerik_yetersiz_basliklar bos liste (Takim Semasi istisnasi calisiyor)", sonuc.get("icerik_yetersiz_basliklar") == [])
 
 print(f"\n{passed} basarili, {failed} basarisiz")
 sys.exit(1 if failed else 0)

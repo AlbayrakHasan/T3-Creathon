@@ -17,8 +17,12 @@ yüklenince backend bu fonksiyonu (ya da onu saran bir HTTP endpoint'i) çağır
 ```json
 {
   "dil": "tr",
+  "dil_uygun": true,
+  "sayfa_sayisi": 12,
+  "sayfa_uygun": true,
   "sablon_uygun": true,
   "eksik_basliklar": ["Sonuç"],
+  "icerik_yetersiz_basliklar": [],
   "hatalar": []
 }
 ```
@@ -26,9 +30,21 @@ yüklenince backend bu fonksiyonu (ya da onu saran bir HTTP endpoint'i) çağır
 | Alan | Tip | Açıklama |
 |---|---|---|
 | `dil` | string | ISO 639-1 dil kodu (`tr`, `en`, ...) ya da `unknown` |
+| `dil_uygun` | boolean | Tespit edilen dil `kabul_edilen_diller` listesinde mi |
+| `sayfa_sayisi` | int | PDF'in toplam sayfa sayısı |
+| `sayfa_uygun` | boolean | Sayfa sayısı `min_sayfa`-`max_sayfa` aralığında mı |
 | `sablon_uygun` | boolean | Tüm zorunlu başlıklar bulunduysa `true` |
 | `eksik_basliklar` | string[] | Bulunamayan zorunlu başlıkların listesi |
+| `icerik_yetersiz_basliklar` | string[] | **Bulunan** ama altında çok az metin olan başlıklar (bkz. sınırlama notu aşağıda) |
 | `hatalar` | string[] | Analiz sırasında oluşan hata mesajları (normal akışta boş) |
+
+**`icerik_yetersiz_basliklar` hakkında önemli sınırlama:** Bu sadece "başlığın
+altında neredeyse hiç metin yok mu" diye bakan kaba bir kontrol — içeriğin
+*kalitesini* değerlendirmiyor (o, Hayrettin'in AI kriter modülünün işi). Kalın
+başlıklar arası mesafeyi ölçerek çalışıyor, `docs/mvp-rules.json`'daki
+`min_bolum_karakter` (varsayılan eşik) ve `min_bolum_karakter_override`
+(bölüme özel istisna — örn. "Takım Şeması" doğal olarak kısa olduğu için 0)
+ile ayarlanabiliyor.
 
 **Hata durumu (PDF okunamadıysa):**
 ```json

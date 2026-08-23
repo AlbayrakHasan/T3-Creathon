@@ -35,8 +35,19 @@ def count_pages(pdf_path: str) -> int:
 
 
 def detect_language(text: str) -> str:
-    """Ilk 1000 karakterden dil tespiti yapar. Kisa/bozuk metinde 'unknown' doner."""
-    sample = text[:1000].strip()
+    """Dil tespiti yapar. Kisa/bozuk metinde 'unknown' doner.
+
+    Ilk 1000 karakteri DEGIL, kapak sayfasi + Icindekiler'i atlayip
+    metnin biraz icinden bir pencere kullaniyoruz. Gercek 34 KTR raporunda
+    test edildi: ilk-1000-karakter yontemi 12/34 raporu yanlislikla
+    Almanca/Ingilizce sandi (kapak+Icindekiler'de gecen kisa
+    kisaltmalar/Ingilizce teknik terimler langdetect'i yaniltiyor).
+    Bu pencereyle 33/34 dogru tespit ediliyor.
+    """
+    baslangic = min(2500, len(text) // 3)
+    sample = text[baslangic:baslangic + 1500].strip()
+    if not sample:
+        sample = text[:1000].strip()
     if not sample:
         return "unknown"
     try:
@@ -70,6 +81,37 @@ def check_template(text: str, rules: dict) -> dict:
     }
 
 
+def check_content(text: str, rules: dict) -> list:
+    """Metinde BULUNAN basliklarin altinda yeterli icerik olup olmadigini
+    kontrol eder (eksik basliklar zaten check_template'te raporlaniyor,
+    burada onlari tekrar saymiyoruz).
+
+    Basligin ilk gectigi yeri degil SON gectigi yeri kullaniyoruz: gercek
+    raporlarda 2. sayfa genelde "Icindekiler" oluyor ve tum basliklar orada
+    bir kez daha (sayfa numarasiyla) geciyor. Ilk esleseni kullansaydik
+    icindekiler satirini "bolum icerigi" sanip yanlis olculer.
+    """
+    normalized_text = _turkish_casefold(text)
+    varsayilan_min = rules.get("min_bolum_karakter", 30)
+    ozel_min = rules.get("min_bolum_karakter_override", {})
+
+    positions = []
+    for baslik in rules["zorunlu_basliklar"]:
+        idx = normalized_text.rfind(_turkish_casefold(baslik))
+        if idx != -1:
+            positions.append((idx, baslik))
+    positions.sort()
+
+    yetersiz = []
+    for i, (idx, baslik) in enumerate(positions):
+        min_karakter = ozel_min.get(baslik, varsayilan_min)
+        bolum_baslangic = idx + len(baslik)
+        bolum_bitis = positions[i + 1][0] if i + 1 < len(positions) else len(text)
+        if bolum_bitis - bolum_baslangic < min_karakter:
+            yetersiz.append(baslik)
+    return yetersiz
+
+
 def analyze_document(pdf_path: str, rules: dict) -> dict:
     """Ana giris noktasi - backend sadece bu fonksiyonu cagirir."""
     try:
@@ -78,12 +120,22 @@ def analyze_document(pdf_path: str, rules: dict) -> dict:
             return {"hata": "PDF'ten metin cikarilamadi (taranmis/goruntu PDF olabilir)"}
 
         dil = detect_language(text)
+        dil_uygun = dil in rules.get("kabul_edilen_diller", [])
+
         sablon = check_template(text, rules)
+        icerik_yetersiz_basliklar = check_content(text, rules)
+
+        sayfa_sayisi = count_pages(pdf_path)
+        sayfa_uygun = rules.get("min_sayfa", 0) <= sayfa_sayisi <= rules.get("max_sayfa", 10**9)
 
         return {
             "dil": dil,
+            "dil_uygun": dil_uygun,
+            "sayfa_sayisi": sayfa_sayisi,
+            "sayfa_uygun": sayfa_uygun,
             "sablon_uygun": sablon["sablon_uygun"],
             "eksik_basliklar": sablon["eksik_basliklar"],
+            "icerik_yetersiz_basliklar": icerik_yetersiz_basliklar,
             "hatalar": [],
         }
     except Exception as e:

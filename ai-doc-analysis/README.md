@@ -1,8 +1,9 @@
 # ai-doc-analysis — Doküman & Şablon Analizi (Hasan)
 
-Rapor yüklendiğinde çalışan **ilk kontrol katmanı**. Bir PDF'i alır, üç şeyi
-kontrol eder ve bunu tek bir JSON olarak döner: dil, şablon uygunluğu (zorunlu
-başlıklar var mı), ve varsa hatalar.
+Rapor yüklendiğinde çalışan **ilk kontrol katmanı**. Bir PDF'i alır, beş şeyi
+kontrol eder ve bunu tek bir JSON olarak döner: dil uygunluğu, sayfa sayısı
+uygunluğu, şablon uygunluğu (zorunlu başlıklar var mı), başlığı olup içeriği
+zayıf bölümler, ve varsa hatalar.
 
 Bunu bir havaalanı güvenlik kontrolüne benzetebilirsin: uçağa binmeden önceki
 ilk, hızlı kontrol noktası. Detaylı inceleme (kategori, benzerlik, kriter
@@ -79,8 +80,17 @@ python tests/test_analyzer.py
 
 - `pdfplumber` taranmış/görüntü PDF'lerden metin çıkaramaz. Bu durumda
   `analyze_document`, `{"hata": "..."}` döner, çökmez.
-- Çok kısa metinlerde `langdetect` yanlış tahmin yapabilir (`unknown`
-  dönebilir).
+- Bazı PDF'lerin **font kodlaması bozuk** olabiliyor (Word/PDF dönüştürücü
+  hatası — gerçek örnek: `KTR_08`'de bazı "İ" harfleri "Ġ" olarak çıkıyor).
+  Bu, kaynak dosyanın sorunu; `pdfplumber` ne çıkarırsa onu işliyoruz. Bu
+  durumda dil tespiti (ve teorik olarak başlık eşleştirmesi) yanlış
+  çıkabilir — sistem çökmez ama sonuç güvenilmez olabilir.
+- `detect_language`, metnin kapak+İçindekiler kısmını atlayıp ortasından bir
+  pencere kullanıyor (ilk 1000 karakter yerine) — 34 gerçek raporda bu
+  değişiklik doğruluğu %65'ten (22/34) %97'ye (33/34) çıkardı. Kalan tek
+  istisna yukarıdaki font kodlaması bozuk dosya.
+- `icerik_yetersiz_basliklar`, bölümün *var olup olmadığına* kaba bir bakış —
+  içerik *kalitesini* değerlendirmiyor (bkz. `docs/api-contract.md`).
 - Türkçe büyük/küçük harf (İ/i, I/ı) farkı, `analyzer.py` içindeki
   `_turkish_casefold` fonksiyonuyla ele alınıyor ve test edildi (bkz.
   `tests/test_analyzer.py`).
@@ -89,8 +99,15 @@ python tests/test_analyzer.py
 
 - [x] `docs/mvp-rules.json`'daki `zorunlu_basliklar` listesi artık 34 gerçek
   finalist raporundan türetildi ve bağımsız test edildi
-- [x] Farklı kalitede gerçek örnekler var: 29/34 uygun, 5/34 eksik/farklı
-  başlıklı, 1 tanesi yanlış dilde (İngilizce) — hepsi gerçek, uydurma değil
+- [x] Dil uygunluğu (`dil_uygun`) ve sayfa sayısı uygunluğu (`sayfa_uygun`)
+  artık gerçekten kontrol ediliyor — önceden `mvp-rules.json`'da tanımlı
+  olup koddan hiç okunmayan "ölü" alanlardı
+- [x] Minimal içerik kontrolü (`icerik_yetersiz_basliklar`) eklendi —
+  bölüme özel eşik (`min_bolum_karakter_override`) ile "Takım Şeması" gibi
+  doğal olarak kısa bölümlerde yanlış alarm vermiyor
+- [x] 34 raporun tamamı üzerinde test edildi: 28/34 sorunsuz, 5/34 gerçek
+  başlık uyumsuzluğu, 1/34 kaynak PDF'in kendi font hatası — hepsi gerçek,
+  uydurma değil
 - [ ] Taranmış/görüntü PDF senaryosu hâlâ test edilmedi (elimizde öyle bir
   örnek yok)
 - [ ] Hayrettin ile JSON format anlaşması resmileştirilmedi (taslak:

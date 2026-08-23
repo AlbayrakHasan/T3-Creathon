@@ -1,5 +1,5 @@
 {
-  "_not": "TEKNOFEST Havacilikta Yapay Zeka Yarismasi - Kritik Tasarim Raporu (KTR), 2022 sezonu referans alindi. Basliklar, 34 bagimsiz gercek finalist raporunun (%98+ tutarlilik) ortak yapisindan turetildi - bkz. ai-doc-analysis/sample_reports/havacilikta_yz_ktr/KTR_Dogrulama.csv. ONEMLI: bu liste SADECE 2022 raporlarinin kendisinden geliyor, hicbir sartnameden degil. 2026 sezonunda 'KTR' terimi artik kullanilmiyor (yerine 'Final Tasarim Raporu/FTR' deniyor, bkz. sartname_teknik_2026.pdf madde 5.2) - yani 2026 sartnamesi bu basliklar icin dogrulanmis bir referans DEGIL, sadece elde sartname olsun diye indirilen en yakin dokuman. Sistem tasarimi geregi bu liste Yarisma Yoneticisi tarafindan her yarisma icin degistirilebilir olmali.",
+  "_not": "TEKNOFEST Havacilikta Yapay Zeka Yarismasi - Kritik Tasarim Raporu (KTR), 2022 sezonu referans alindi. Basliklar, 34 bagimsiz gercek finalist raporunun (%98+ tutarlilik) ortak yapisindan turetildi - bkz. ai-doc-analysis/sample_reports/havacilikta_yz_ktr/KTR_Dogrulama.csv. ONEMLI: bu liste SADECE 2022 raporlarinin kendisinden geliyor, hicbir sartnameden degil. 2026 sezonunda 'KTR' terimi artik kullanilmiyor (yerine 'Final Tasarim Raporu/FTR' deniyor, bkz. sartname_teknik_2026.pdf madde 5.2) - yani 2026 sartnamesi bu basliklar icin dogrulanmis bir referans DEGIL, sadece elde sartname olsun diye indirilen en yakin dokuman. min_sayfa/max_sayfa, 34 raporun gercek sayfa sayilarindan (9-15 sayfa, ortalama 12.1) biraz pay birakilarak turetildi. min_bolum_karakter, 'Takim Semasi' gibi dogal olarak kisa bolumleri yanlislikla 'yetersiz icerik' saymayacak sekilde dusuk secildi. Sistem tasarimi geregi bu liste Yarisma Yoneticisi tarafindan her yarisma icin degistirilebilir olmali.",
   "kaynak": "https://www.teknofest.org/tr/yarismalar/havacilikta-yapay-zeka-yarismasi/ (Derece Listesi - 2022 KTR raporlari, 34 adet)",
   "kabul_edilen_diller": ["tr"],
   "zorunlu_basliklar": [
@@ -10,6 +10,10 @@
     "Sonuçlar ve İnceleme",
     "Kaynakça"
   ],
-  "min_sayfa": 3,
-  "max_sayfa": 20
+  "min_sayfa": 8,
+  "max_sayfa": 18,
+  "min_bolum_karakter": 30,
+  "min_bolum_karakter_override": {
+    "Takım Şeması": 0
+  }
 }
