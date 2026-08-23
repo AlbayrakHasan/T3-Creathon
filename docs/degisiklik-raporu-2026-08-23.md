@@ -101,19 +101,45 @@ dokunulmadan mock olarak bırakıldı.
 
 | Öncelik | Konu | Açıklama |
 |---|---|---|
-| 🔴 Güvenlik | JWT secret key sabit kodlanmış | `backend/app/auth.py:12` — `SECRET_KEY = "super-secret-t3-creathon-key"` **public repoda düz metin duruyor.** Şu an kimse gerçek veri kullanmadığı için acil değil, ama gerçek kullanım öncesi ortam değişkenine taşınmalı. İstersen şimdi düzeltebilirim |
-| 🟡 Tutarlılık | Dil karışıklığı | Backend'deki 3 mock fonksiyon (Hayrettin'in yeri) + frontend etiketleri İngilizce; benim ürettiğim özet/bulgular Türkçe. Ekipçe karar verilmedi |
+| ✅ Güvenlik | ~~JWT secret key sabit kodlanmış~~ | **Düzeltildi (bkz. Bölüm 7).** Artık `JWT_SECRET_KEY` ortam değişkeninden okunuyor |
+| 🔄 Tutarlılık | Dil karışıklığı | Kullanıcı karar verdi: **her yerde Türkçe.** Frontend çevirisi şu an yapılıyor (bkz. Bölüm 7) |
 | 🟡 Kapsam | Hayrettin'in modülü yok | `evaluate_criteria`, `analyze_category_fit`, `check_similarity` hâlâ rastgele sayı üretiyor — gerçek değerlendirme henüz çalışmıyor |
 | 🟢 Test kapsamı | Taranmış/görüntü PDF senaryosu | Elimizde böyle bir örnek yok, hiç test edilmedi (kod `hata` alanıyla düzgün karşılıyor ama gerçek örnekle doğrulanmadı) |
 | 🟢 Bilinen sınırlama | Bozuk font kodlamalı PDF (KTR_08) | Kaynak dosyanın kendi sorunu, düzeltilemez — dil tespiti yanlış çıkabilir, sistem çökmüyor |
-| ⚪ Kozmetik | `datetime.utcnow()` deprecation uyarıları | Backend testlerinde ~37 uyarı (Python'un gelecekte kaldıracağı bir API) — hata değil, sadece uyarı, benim eklediğim kod değil |
+| ✅ Kozmetik | ~~`datetime.utcnow()` deprecation uyarıları~~ | **Düzeltildi (bkz. Bölüm 7).** Backend test uyarı sayısı 37'den 11'e düştü (kalanlar FastAPI'nin kendi `on_event` uyarısı, benim kapsamım dışında) |
 | ⚪ Süreç | Eski repo hâlâ var | `mahmutconger/t3creathon_web`'e commit atılmaya devam edilirse tekrar ayrışırız — ekibe "artık buradan çalışmayın" mesajı iletilmeli |
-
-**Kırmızı olan (JWT secret) dışında hiçbiri acil/engelleyici değil.**
 
 ## 6. Sıradaki adımlar
 
-1. JWT secret key'i ortam değişkenine taşı (istenirse hemen yapılabilir)
+1. ~~JWT secret key'i ortam değişkenine taşı~~ ✅ yapıldı
 2. Hayrettin kendi modülünü yazsın, `ai.py`'deki 3 mock fonksiyonu değiştirsin
-3. Dil kararı (Türkçe/İngilizce) ekipçe netleştirilsin
+3. ~~Dil kararı (Türkçe/İngilizce) ekipçe netleştirilsin~~ ✅ karar verildi (Türkçe), uygulanıyor
 4. Eski repo hakkında ekibe bilgi verilsin
+
+## 7. Ek düzeltmeler (aynı gün, kullanıcı talebiyle)
+
+### 7.1. JWT secret key ortam değişkenine taşındı
+- `backend/app/auth.py`: `SECRET_KEY` artık `JWT_SECRET_KEY` ortam
+  değişkeninden (ya da `backend/.env`'den, `python-dotenv` ile) okunuyor.
+  Ayarlanmazsa geliştirme için sabit bir değere döner ve `RuntimeWarning`
+  basar — sessizce güvensiz kalmıyor
+- `backend/.env.example` ve `backend/README.md` eklendi (kurulum + rastgele
+  anahtar üretme komutu)
+- `.gitignore`'a `backend/.env` eklendi
+
+### 7.2. `datetime.utcnow()` deprecation temizliği
+`auth.py`, `models.py`, `routes/reports.py`'deki tüm `datetime.datetime.utcnow()`
+çağrıları `datetime.datetime.now(datetime.UTC).replace(tzinfo=None)` ile
+değiştirildi (aynı naive-UTC davranışı, deprecated olmayan API). Backend
+test uyarı sayısı 37'den 11'e düştü.
+
+**Doğrulama:** Backend pytest suite'i tekrar çalıştırıldı, 7/7 geçti.
+
+### 7.3. Frontend Türkçe çevirisi
+Kullanıcı arayüzünün tamamen İngilizce olduğu (`http://localhost:3000`'da
+bizzat açılıp doğrulandı — ana sayfa, rol seçimi, tüm metin İngilizce)
+tespit edildi. Kullanıcı kararı: teknik terim ve ürün isimleri hariç her
+şey Türkçe'ye çevrilsin. Kapsam: 33 kaynak dosya, 74 test (9 test suite) —
+bu ölçekte bir kod tabanına dokunmadan önce Node.js kuruldu, mevcut test
+suite'i baseline olarak çalıştırıldı (9/9 suite, 74/74 test geçti), sonra
+çeviri işi delege edildi. Sonuç bir sonraki bölümde raporlanacak.
