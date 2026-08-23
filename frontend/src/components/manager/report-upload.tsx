@@ -1,0 +1,279 @@
+"use client";
+
+import { useCallback, useId, useRef, useState, type DragEvent, type KeyboardEvent } from "react";
+
+const ACCEPTED_MIME_TYPES = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
+const ACCEPTED_EXTENSIONS = [".pdf", ".doc", ".docx"];
+const ACCEPT_ATTRIBUTE = ACCEPTED_EXTENSIONS.join(",");
+
+type UploadStatus = "uploading" | "success" | "error";
+
+interface UploadItem {
+  id: string;
+  fileName: string;
+  status: UploadStatus;
+  progress: number;
+  errorMessage?: string;
+}
+
+interface ReportUploadProps {
+  /** Interval between simulated progress ticks, in ms. Lower this in tests. */
+  progressIntervalMs?: number;
+  /** Progress gained per tick. */
+  progressStepPercent?: number;
+  onUploadComplete?: (fileName: string) => void;
+}
+
+function isAcceptedFile(file: File): boolean {
+  if (ACCEPTED_MIME_TYPES.includes(file.type)) return true;
+  const lowerName = file.name.toLowerCase();
+  return ACCEPTED_EXTENSIONS.some((extension) => lowerName.endsWith(extension));
+}
+
+let idCounter = 0;
+function nextId(): string {
+  idCounter += 1;
+  return `upload-${idCounter}`;
+}
+
+export function ReportUpload({
+  progressIntervalMs = 200,
+  progressStepPercent = 25,
+  onUploadComplete,
+}: ReportUploadProps) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [items, setItems] = useState<UploadItem[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const dropzoneLabelId = useId();
+  const dragCounter = useRef(0);
+
+  const simulateUpload = useCallback(
+    (id: string, fileName: string) => {
+      const timer = setInterval(() => {
+        setItems((current) =>
+          current.map((item) => {
+            if (item.id !== id || item.status !== "uploading") return item;
+            const nextProgress = Math.min(item.progress + progressStepPercent, 100);
+            if (nextProgress >= 100) {
+              clearInterval(timer);
+              onUploadComplete?.(fileName);
+              return { ...item, progress: 100, status: "success" as const };
+            }
+            return { ...item, progress: nextProgress };
+          }),
+        );
+      }, progressIntervalMs);
+    },
+    [onUploadComplete, progressIntervalMs, progressStepPercent],
+  );
+
+  const addFiles = useCallback(
+    (fileList: FileList | File[]) => {
+      const files = Array.from(fileList);
+
+      files.forEach((file) => {
+        const id = nextId();
+
+        if (!isAcceptedFile(file)) {
+          setItems((current) => [
+            ...current,
+            {
+              id,
+              fileName: file.name,
+              status: "error",
+              progress: 0,
+              errorMessage: "Unsupported file type. Upload a PDF or Word document.",
+            },
+          ]);
+          return;
+        }
+
+        setItems((current) => [
+          ...current,
+          { id, fileName: file.name, status: "uploading", progress: 0 },
+        ]);
+
+        simulateUpload(id, file.name);
+      });
+    },
+    [simulateUpload],
+  );
+
+  function handleDrop(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    dragCounter.current = 0;
+    setIsDragging(false);
+    if (event.dataTransfer.files?.length) {
+      addFiles(event.dataTransfer.files);
+    }
+  }
+
+  function handleDragEnter(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    dragCounter.current += 1;
+    setIsDragging(true);
+  }
+
+  function handleDragOver(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+  }
+
+  function handleDragLeave(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    dragCounter.current = Math.max(0, dragCounter.current - 1);
+    if (dragCounter.current === 0) setIsDragging(false);
+  }
+
+  function handleZoneKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      inputRef.current?.click();
+    }
+  }
+
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
+    if (event.target.files?.length) {
+      addFiles(event.target.files);
+    }
+    event.target.value = "";
+  }
+
+  function removeItem(id: string) {
+    setItems((current) => current.filter((item) => item.id !== id));
+  }
+
+  return (
+    <section
+      aria-labelledby={dropzoneLabelId}
+      className="rounded-2xl border border-border bg-surface p-6 shadow-sm"
+    >
+      <div className="mb-6">
+        <h2 id={dropzoneLabelId} className="text-xl font-bold text-foreground">
+          Report Upload
+        </h2>
+        <p className="mt-1 text-sm text-muted">
+          Drag and drop PDF or Word evaluation reports, or browse to select files.
+        </p>
+      </div>
+
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="Upload report files. Drag and drop, or press Enter to browse for PDF or Word documents."
+        data-testid="upload-dropzone"
+        data-dragging={isDragging}
+        onClick={() => inputRef.current?.click()}
+        onKeyDown={handleZoneKeyDown}
+        onDrop={handleDrop}
+        onDragEnter={handleDragEnter}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        className={`flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-6 py-12 text-center transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 ${
+          isDragging
+            ? "border-brand-500 bg-brand-50"
+            : "border-border bg-slate-50 hover:border-brand-300 hover:bg-brand-50/40"
+        }`}
+      >
+        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-100 text-brand-700">
+          <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true">
+            <path
+              d="M12 16V4m0 0-4 4m4-4 4 4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+        <p className="text-sm font-semibold text-foreground">
+          {isDragging ? "Drop files to upload" : "Drag & drop files here, or click to browse"}
+        </p>
+        <p className="text-xs text-muted">PDF or Word documents only</p>
+        <input
+          ref={inputRef}
+          type="file"
+          multiple
+          accept={ACCEPT_ATTRIBUTE}
+          onChange={handleInputChange}
+          aria-hidden="true"
+          tabIndex={-1}
+          className="sr-only"
+          data-testid="upload-file-input"
+        />
+      </div>
+
+      {items.length > 0 && (
+        <ul className="mt-5 flex flex-col gap-2.5" data-testid="upload-list" aria-label="Uploads">
+          {items.map((item) => (
+            <li
+              key={item.id}
+              data-testid={`upload-item-${item.fileName}`}
+              data-status={item.status}
+              className="flex items-center gap-3 rounded-xl border border-border bg-white px-4 py-3"
+            >
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="truncate text-sm font-medium text-foreground">
+                    {item.fileName}
+                  </span>
+                  {item.status === "uploading" && (
+                    <span className="shrink-0 text-xs font-semibold text-muted">
+                      {item.progress}%
+                    </span>
+                  )}
+                  {item.status === "success" && (
+                    <span className="shrink-0 text-xs font-semibold text-emerald-600">
+                      Uploaded
+                    </span>
+                  )}
+                </div>
+
+                {item.status === "uploading" && (
+                  <div
+                    role="progressbar"
+                    aria-label={`Uploading ${item.fileName}`}
+                    aria-valuenow={item.progress}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-100"
+                  >
+                    <div
+                      className="h-full rounded-full bg-brand-600 transition-[width] duration-200"
+                      style={{ width: `${item.progress}%` }}
+                    />
+                  </div>
+                )}
+
+                {item.status === "error" && (
+                  <p role="alert" className="mt-1 text-xs font-medium text-red-600">
+                    {item.errorMessage}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => removeItem(item.id)}
+                aria-label={`Remove ${item.fileName}`}
+                className="shrink-0 rounded-md p-1.5 text-muted transition hover:bg-slate-100 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+              >
+                ×
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}

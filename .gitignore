@@ -14,6 +14,7 @@ build/
 # Backend
 *.db
 *.sqlite3
+backend/uploads/
 
 # Editor / OS
 .vscode/
