@@ -43,7 +43,7 @@ def run_background_analysis(report_id: str, file_path: str, db: Session):
         db_analysis = models.AiAnalysis(
             id=str(uuid.uuid4()),
             report_id=report_id,
-            analyzed_at=datetime.datetime.utcnow(),
+            analyzed_at=datetime.datetime.now(datetime.UTC).replace(tzinfo=None),
             engine_version="eval-engine v1.0",
             suggested_outcome=analysis_data["suggested_outcome"],
             suggested_score=analysis_data["suggested_score"],
@@ -118,7 +118,7 @@ async def upload_report(
         status="pending",
         file_path=file_path,
         submitted_by_id=current_user.id,
-        submission_date=datetime.datetime.utcnow()
+        submission_date=datetime.datetime.now(datetime.UTC).replace(tzinfo=None)
     )
     
     db.add(db_report)
@@ -236,7 +236,7 @@ def submit_decision(
         outcome=decision_in.outcome,
         final_score=decision_in.final_score,
         rationale=decision_in.rationale,
-        submitted_at=datetime.datetime.utcnow()
+        submitted_at=datetime.datetime.now(datetime.UTC).replace(tzinfo=None)
     )
     
     # Update report status

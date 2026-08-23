@@ -3,6 +3,13 @@ from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from .database import Base
 
+
+def _utcnow() -> datetime.datetime:
+    """datetime.datetime.utcnow() deprecated oldugu icin (Python 3.12+) -
+    ayni naive-UTC davranisini timezone-aware API ile uretiyoruz."""
+    return datetime.datetime.now(datetime.UTC).replace(tzinfo=None)
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -10,7 +17,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     password_hash = Column(String, nullable=False)
     role = Column(String, nullable=False) # COMPETITION_MANAGER, REFEREE, COMPETITOR, EVALUATION_MANAGER
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at = Column(DateTime, default=_utcnow)
 
     # Relationships
     reports = relationship("Report", back_populates="submitted_by")
@@ -51,7 +58,7 @@ class Report(Base):
     status = Column(String, default="pending") # pending, analyzed, approved, rejected, revise
     file_path = Column(String, nullable=False)
     submitted_by_id = Column(String, ForeignKey("users.id"), nullable=False)
-    submission_date = Column(DateTime, default=datetime.datetime.utcnow)
+    submission_date = Column(DateTime, default=_utcnow)
 
     # Relationships
     submitted_by = relationship("User", back_populates="reports")
@@ -65,7 +72,7 @@ class AiAnalysis(Base):
 
     id = Column(String, primary_key=True, index=True)
     report_id = Column(String, ForeignKey("reports.id"), unique=True, nullable=False)
-    analyzed_at = Column(DateTime, default=datetime.datetime.utcnow)
+    analyzed_at = Column(DateTime, default=_utcnow)
     engine_version = Column(String, default="eval-engine v1.0")
     suggested_outcome = Column(String, nullable=False) # approve, reject, revise
     suggested_score = Column(Integer, nullable=False)
@@ -101,7 +108,7 @@ class FinalDecision(Base):
     outcome = Column(String, nullable=False) # approve, reject, revise
     final_score = Column(Integer, nullable=False)
     rationale = Column(Text, nullable=False)
-    submitted_at = Column(DateTime, default=datetime.datetime.utcnow)
+    submitted_at = Column(DateTime, default=_utcnow)
 
     # Relationships
     report = relationship("Report", back_populates="final_decision")
