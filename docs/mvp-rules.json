@@ -1,0 +1,7 @@
+{
+  "_not": "TASLAK - gercek TEKNOFEST rapor sablonu arastirmasi tamamlaninca guncellenecek (bkz. CLAUDE.md Bolum 6)",
+  "kabul_edilen_diller": ["tr"],
+  "zorunlu_basliklar": ["Özet", "Problem Tanımı", "Yöntem", "Bulgular", "Sonuç"],
+  "min_sayfa": 3,
+  "max_sayfa": 15
+}
