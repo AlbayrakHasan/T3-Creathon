@@ -67,9 +67,10 @@ Bu ekleme sonrası 34 raporun 32'si `sablon_uygun: true` çıkıyor (öncesinde
 Bu durumda backend, raporu "işlenemedi" durumuna almalı ve hakeme/yarışmacıya
 bunu bildirmeli — sistem çökmemeli.
 
-### ⚠️ Gerçek backend ile uyumsuzluk keşfedildi (2026-08-23) ve düzeltildi
+### ✅ Gerçek backend ile uyumsuzluk keşfedildi ve entegre edildi (2026-08-23)
 
-Takımın ayrı ilerlettiği `t3creathon_web-master` reposunda backend
+Takımın ayrı ilerlettiği (https://github.com/mahmutconger/t3creathon_web)
+backend
 (`backend/app/services/ai.py`) ve veritabanı şeması (`AiAnalysis` tablosu:
 `language_template_score` INTEGER kolonu) ve hakem paneli (frontend,
 `src/lib/ai-analysis.ts`) benimle hiç senkron olunmadan **farklı bir format**
@@ -96,11 +97,14 @@ edildi: 32'si her iki alanda da 100 puan, 1'i (gerçekten eksik başlık) 80
 puanla "gözden geçirilmeli" bandına, 1'i (bozuk font/yanlış dil) 60 puanla
 "kritik" bandına düşüyor — beklenen davranış.
 
-**Mustafa için entegrasyon notu:** `backend/app/services/ai.py`'deki
-`analyze_document(file_path)` fonksiyonunu silip yerine
-`ai-doc-analysis/analyzer.py`'den `analyze_document_for_ui`'ı import edip
-çağırman yeterli — dönen sözlük zaten `{"languageTemplate": ..., "contentHeading": ...}`
-şeklinde, `run_full_analysis()`'in geri kalanına dokunman gerekmiyor.
+**Entegrasyon tamamlandı:** `backend/` ve `frontend/` bu repoya taşındı
+(kaynak: yukarıdaki repo, commit `ef92a7f`, `master` dalı). `backend/app/services/ai.py`'deki
+`analyze_document(file_path)` artık `ai-doc-analysis/analyzer.py`'deki
+`analyze_document_for_ui`'ı çağırıyor. Doğrulandı: backend'in kendi pytest
+suite'i (7/7 geçti) + gerçek KTR PDF'leriyle uçtan uca upload→analiz→get
+akışı (doğru puanlar veritabanına yazılıp API'den döndü). Hayrettin'in
+mock fonksiyonları (`evaluate_criteria`, `analyze_category_fit`,
+`check_similarity`) henüz değiştirilmedi, o hâlâ kendi kısmını yazacak.
 
 **Ayrıca dikkat:** O repodaki tüm UI metinleri (özet/bulgu cümleleri, etiketler)
 **İngilizce** yazılmış, benim ürettiğim özet/bulgular ise **Türkçe**. Bu, ekip

@@ -12,12 +12,17 @@ ve [`docs/PROJECT_CONTEXT.md`](docs/PROJECT_CONTEXT.md).
 | Klasör | Kişi | İçerik | Durum |
 |---|---|---|---|
 | `ai-doc-analysis/` | Hasan | Dil/şablon/başlık kontrolü | ✅ Çalışıyor, gerçek veriyle test edildi |
-| `ai-scoring/` | Hayrettin | Kategori, benzerlik, kriter puanlama | 🔜 Başlanmadı |
-| `backend/` | Mustafa | FastAPI + SQLite — API, veri modeli, entegrasyon | 🔜 Başlanmadı |
-| `frontend/` | Mahmut | React/Next.js — rol bazlı paneller | 🔜 Başlanmadı |
+| `ai-scoring/` | Hayrettin | Kategori, benzerlik, kriter puanlama | 🔜 Başlanmadı (backend'de mock olarak duruyor) |
+| `backend/` | Mustafa | FastAPI + SQLite — API, veri modeli, auth | ✅ Çalışıyor (auth, upload, analiz akışı, hakem kararı) — [mahmutconger/t3creathon_web](https://github.com/mahmutconger/t3creathon_web)'dan entegre edildi |
+| `frontend/` | Mahmut | Next.js — rol bazlı paneller | ✅ Çalışıyor (4 rol paneli, hakem raporu görünümü) — aynı repodan entegre edildi |
 | `docs/` | — | Ortak dokümanlar, API sözleşmesi, MVP kuralları | Güncel |
 
-## Şu ana kadar tamamlanan: `ai-doc-analysis`
+**Not:** `backend/` ve `frontend/`, Mahmut/Mustafa'nın ayrı ilerlettiği
+[t3creathon_web](https://github.com/mahmutconger/t3creathon_web) reposundan
+bu monorepoya taşındı (2026-08-23). O repo artık kullanılmıyor — bundan
+sonra tüm çalışma buradan devam etmeli, yoksa tekrar ayrışırız.
+
+## Şu ana kadar tamamlanan: `ai-doc-analysis` + backend entegrasyonu
 
 Rapor yüklendiğinde çalışan ilk kontrol katmanı. PDF'i alır, 5 şeyi kontrol
 edip JSON döner: dil uygunluğu, sayfa sayısı uygunluğu, şablon uygunluğu
@@ -30,7 +35,7 @@ değil, TEKNOFEST'in kendi Derece Listesi'nden). Detay: [`ai-doc-analysis/README
 **Son test sonucu** (`python ai-doc-analysis/tests/test_analyzer.py`):
 
 ```
-25 başarılı, 0 başarısız
+32 başarılı, 0 başarısız
 ```
 
 **34 gerçek rapor üzerinde toplu sonuç:**
@@ -45,6 +50,14 @@ Bu oranlar gerçek hakem kararlarına kasıtlı olarak yakınlaştırıldı: sis
 "Kaynakça" yerine "Referanslar" yazan bir raporu artık haksız yere
 reddetmiyor (bkz. `docs/mvp-rules.json` → `esanlamli_basliklar`).
 
+**Backend entegrasyonu:** Ayrı ilerleyen repoyu incelerken, backend + hakem
+panelinin benim modülümden **farklı bir JSON formatı** (0-100 puan +
+özet/bulgu) beklediği ortaya çıktı — birbirimizden habersiz farklı
+sözleşmeler üzerine çalışmışız. `analyze_document_for_ui()` adlı bir
+adaptör yazıp `backend/app/services/ai.py`'ye bağladım, backend'in kendi
+test suite'i (7/7) ve gerçek KTR PDF'leriyle uçtan uca (upload→analiz→get)
+doğrulandı. Detay: `docs/api-contract.md` Bölüm 1.
+
 ## Hayrettin — sıradaki adımların
 
 1. `docs/api-contract.md` **Bölüm 2**'yi oku — senin modülünün beklenen JSON
@@ -55,29 +68,36 @@ reddetmiyor (bkz. `docs/mvp-rules.json` → `esanlamli_basliklar`).
    Kriter değerlendirme modülün için hazır bir başlangıç noktası
 3. Test verisi olarak benim kullandığım 34 raporu (`ai-doc-analysis/sample_reports/havacilikta_yz_ktr/reports/`)
    sen de kullanabilirsin — kategori/benzerlik modülün için gerçek veri
-4. Benimle JSON format konusunda senkron olalım — API sözleşmesi hâlâ taslak
+4. `backend/app/services/ai.py`'deki `evaluate_criteria`, `analyze_category_fit`,
+   `check_similarity` fonksiyonları hâlâ mock (rastgele sayı üretiyor) —
+   senin gerçek kodun bunların yerine geçecek. Aynı dosyada benim
+   `analyze_document`'i nasıl entegre ettiğimi örnek alabilirsin
 
-## Mustafa — sıradaki adımların
+## Mustafa — durum
 
-1. `docs/api-contract.md`'deki her iki modülün (benim ve Hayrettin'in)
-   çıktı JSON şemalarını incele
-2. `ai-doc-analysis/analyzer.py`'deki `analyze_document(pdf_path, rules)`
-   fonksiyonunu backend'den nasıl çağıracağını düşün — `rules` parametresi
-   dışarıdan geliyor, yani veritabanından her yarışmaya özel kural setini
-   çekip geçirebilirsin (bkz. `docs/mvp-rules.json` — bu statik dosya, senin
-   veritabanı karşılığın olacak)
-3. `POST /analyze-template` önerisini (api-contract.md'de) değerlendir
+Backend zaten senin elinden çıkma haliyle bu repoya taşındı, benim
+modülümle entegre edildi ve test edildi (bkz. yukarısı). Sıradaki: Hayrettin
+kendi modülünü yazınca `ai.py`'deki kalan 3 mock fonksiyonu onunla
+değiştirmesine yardım et.
 
-## Mahmut — sıradaki adımların
+## Mahmut — durum
 
-1. `docs/PROJECT_CONTEXT.md` Bölüm 2'deki 4 rolü (Yarışma Yöneticisi,
-   Hakem, Yarışmacı, Değerlendirme Yöneticisi) incele
-2. Hakem panelinde benim modülümün çıktısının (`docs/api-contract.md`
-   Bölüm 1 JSON şeması) nasıl gösterileceğini düşünmeye başlayabilirsin
+Frontend zaten bu repoya taşındı. Bir açık konu var: senin arayüz
+metinlerin (özet/bulgu cümleleri) İngilizce, benim ürettiğim özet/bulgular
+Türkçe — hangisinde karar kılacağımızı ekipçe konuşmamız lazım (bkz.
+`docs/api-contract.md`).
 
 ## Kurulum (herkes için)
 
 ```bash
+# ai-doc-analysis
 pip install -r ai-doc-analysis/requirements.txt
 python ai-doc-analysis/tests/test_analyzer.py
+
+# backend
+pip install -r backend/requirements.txt
+cd backend && python -m pytest tests/ -v
+
+# frontend
+cd frontend && npm install && npm run dev
 ```
