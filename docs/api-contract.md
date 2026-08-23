@@ -56,6 +56,25 @@ bunu bildirmeli — sistem çökmemeli.
 }
 ```
 
+### Referans rubrik (Havacılıkta YZ / KTR, 2022 — puanlama örneği için)
+
+34 gerçek finalist raporundan çıkarılan bölüm puan ağırlıkları — `kriter_puanlari`
+alanının nasıl doldurulabileceğine dair somut bir örnek olarak buraya not
+edildi (bkz. `ai-doc-analysis/sample_reports/havacilikta_yz_ktr/Puan_Rubrigi.md`
+ve `KTR_Dogrulama.csv`). **Bu rakamların içerik kalitesine göre gerçek puan
+hesaplaması Hayrettin'in modülünün işi** — burada sadece hangi bölümün kaç
+puan ağırlığı olduğu listeleniyor, hesaplama/skorlama yapılmadı:
+
+| Bölüm | Puan |
+|---|---|
+| Takım Şeması | 5 |
+| Proje Mevcut Durum Değerlendirmesi | 15 |
+| Algoritmalar ve Sistem Mimarisi | 25 |
+| Özgünlük | 25 |
+| Sonuçlar ve İnceleme | 25 |
+| Kaynakça | 5 |
+| **Toplam** | **100** |
+
 ## 3. Kural Kaynağı
 
 Zorunlu başlıklar, kabul edilen diller ve sayfa sınırları `docs/mvp-rules.json`

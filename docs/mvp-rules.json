@@ -1,7 +1,15 @@
 {
-  "_not": "TASLAK - gercek TEKNOFEST rapor sablonu arastirmasi tamamlaninca guncellenecek (bkz. CLAUDE.md Bolum 6)",
+  "_not": "TEKNOFEST Havacilikta Yapay Zeka Yarismasi - Kritik Tasarim Raporu (KTR), 2022 sezonu referans alindi. Basliklar, 34 bagimsiz gercek finalist raporunun (%98+ tutarlilik) ortak yapisindan turetildi - bkz. ai-doc-analysis/sample_reports/gelen/KTR_Dogrulama.csv. Not: 2026 sezonunda henuz resmi KTR sablonu yayinlanmadi (sadece erken asama ÖTR sablonu var); bu liste 2022 gercek verisine dayaniyor. Sistem tasarimi geregi bu liste Yarisma Yoneticisi tarafindan her yarisma icin degistirilebilir olmali.",
+  "kaynak": "https://www.teknofest.org/tr/yarismalar/havacilikta-yapay-zeka-yarismasi/ (Derece Listesi - 2022 KTR raporlari, 34 adet)",
   "kabul_edilen_diller": ["tr"],
-  "zorunlu_basliklar": ["Özet", "Problem Tanımı", "Yöntem", "Bulgular", "Sonuç"],
+  "zorunlu_basliklar": [
+    "Takım Şeması",
+    "Proje Mevcut Durum Değerlendirmesi",
+    "Algoritmalar ve Sistem Mimarisi",
+    "Özgünlük",
+    "Sonuçlar ve İnceleme",
+    "Kaynakça"
+  ],
   "min_sayfa": 3,
-  "max_sayfa": 15
+  "max_sayfa": 20
 }
