@@ -40,6 +40,13 @@ buyuk_harf_metin = "ÖZET PROBLEM TANIMI YÖNTEM BULGULAR SONUÇ"
 sonuc = check_template(buyuk_harf_metin, rules)
 check("tamamen buyuk harfli Turkce metin dogru eslesiyor", sonuc["sablon_uygun"] is True)
 
+# 3b. Esanlamli baslik: "Sonuc" yerine "Netice" yazilmis ama rules'da
+# esanlamli olarak tanimli - eksik sayilmamali
+esanlamli_rules = dict(rules, esanlamli_basliklar={"Sonuç": ["Netice"]})
+esanlamli_metin = "Özet\n...\nProblem Tanımı\n...\nYöntem\n...\nBulgular\n...\nNetice\n..."
+sonuc = check_template(esanlamli_metin, esanlamli_rules)
+check("esanlamli baslik (Netice=Sonuc) eksik sayilmiyor", sonuc["sablon_uygun"] is True)
+
 # 4. Bos metinde dil tespiti 'unknown' donmeli, hata firlatmamali
 check("bos metinde dil 'unknown' donuyor", detect_language("") == "unknown")
 check("cok kisa/anlamsiz metinde de cokmuyor", detect_language("...") == "unknown" or isinstance(detect_language("..."), str))
@@ -71,17 +78,28 @@ for dosya in ["KTR_00_YXpGnt7IevOLKmM75xNlXyQlgHmz2bTM.pdf", "KTR_01_zrY5U4C9Q5A
     sonuc = analyze_document(str(ktr_dir / dosya), gercek_rules)
     check(f"{dosya}: sablon_uygun (tum basliklar birebir uyuyor)", sonuc.get("sablon_uygun") is True)
 
-# "farkli_isim"/"yok" olarak isaretlenen raporlar - eksik baslik dogru yakalanmali
-check_cases = {
-    "KTR_04_5j08MAXDiofjTNfVPzwdaJow1BYgFOee.pdf": "Algoritmalar ve Sistem Mimarisi",
-    "KTR_12_iG0MdwwmzU4g74omya3paxGSLfsqawqd.pdf": "Kaynakça",
-}
-for dosya, beklenen_eksik in check_cases.items():
+# ESANLAMLI BASLIK TESTI: bu raporlar gercekten dereceye girmis/finalist
+# olmus (yani gercek hakemler onlari kabul etmis) ama bazi basliklari farkli
+# kelimeyle yazmislar (orn. "Kaynakca" yerine "Referanslar"). Birebir string
+# eslesmesi bunlari haksiz yere "eksik" sayardi - esanlamli_basliklar
+# sayesinde artik dogru sekilde uygun sayiliyorlar.
+esanlamli_gecen_raporlar = [
+    "KTR_04_5j08MAXDiofjTNfVPzwdaJow1BYgFOee.pdf",  # "Veri Setleri ve Algoritmalar" -> Algoritmalar ve Sistem Mimarisi
+    "KTR_13_R1bVfdsapUpMaHHTj8runrvxXZPt1Mr4.pdf",  # "Referanslar" -> Kaynakca
+    "KTR_14_mYMgQVHFDGJqLncIfpFW4OKvkqwM96ep.pdf",  # "Referanslar"/"Kaynaklar" -> Kaynakca
+    "KTR_22_AGMSZHBzFTW5FoWHy7FHSth9bgCOEJsD.pdf",  # "Referanslar"/"Kaynaklar" -> Kaynakca
+]
+for dosya in esanlamli_gecen_raporlar:
     sonuc = analyze_document(str(ktr_dir / dosya), gercek_rules)
     check(
-        f"{dosya}: '{beklenen_eksik}' eksik olarak yakalaniyor",
-        beklenen_eksik in sonuc.get("eksik_basliklar", []),
+        f"{dosya}: esanlamli baslik sayesinde sablon_uygun=True (gercekte hakemler de kabul etmisti)",
+        sonuc.get("sablon_uygun") is True,
     )
+
+# KTR_12: BU GERCEKTEN eksik - CSV'ye gore Kaynakca bolumu (ya da esanlamlisi)
+# hic yok, farkli isimli bile degil. Esanlamli listesi bunu duzeltmemeli.
+sonuc = analyze_document(str(ktr_dir / "KTR_12_iG0MdwwmzU4g74omya3paxGSLfsqawqd.pdf"), gercek_rules)
+check("KTR_12: Kaynakca gercekten yok, esanlamli da bulunamiyor", "Kaynakça" in sonuc.get("eksik_basliklar", []))
 
 # KTR_13: DUZELTME - bu rapor gercekte tamamen Turkce (icerigi bizzat kontrol
 # edildi). Ilk versiyonda "dil=en" cikmisti ama bu, detect_language'in ilk

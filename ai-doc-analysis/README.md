@@ -91,6 +91,12 @@ python tests/test_analyzer.py
   istisna yukarıdaki font kodlaması bozuk dosya.
 - `icerik_yetersiz_basliklar`, bölümün *var olup olmadığına* kaba bir bakış —
   içerik *kalitesini* değerlendirmiyor (bkz. `docs/api-contract.md`).
+- Başlık eşleşmesi tam kelime bazlı — ama `esanlamli_basliklar` ile bilinen
+  varyantlar (örn. "Kaynakça" ≈ "Referanslar"/"Kaynaklar") tanınıyor. Bunu
+  34 gerçek rapor üzerinde test ederken keşfettik: bu raporlar gerçek
+  hakemler tarafından zaten kabul edilmiş (TEKNOFEST'in resmi Derece
+  Listesi'nden), ama bazıları bölüm ismini farklı yazmış — birebir
+  eşleşme onları haksız yere "eksik" sayıyordu.
 - Türkçe büyük/küçük harf (İ/i, I/ı) farkı, `analyzer.py` içindeki
   `_turkish_casefold` fonksiyonuyla ele alınıyor ve test edildi (bkz.
   `tests/test_analyzer.py`).
@@ -105,9 +111,12 @@ python tests/test_analyzer.py
 - [x] Minimal içerik kontrolü (`icerik_yetersiz_basliklar`) eklendi —
   bölüme özel eşik (`min_bolum_karakter_override`) ile "Takım Şeması" gibi
   doğal olarak kısa bölümlerde yanlış alarm vermiyor
-- [x] 34 raporun tamamı üzerinde test edildi: 28/34 sorunsuz, 5/34 gerçek
-  başlık uyumsuzluğu, 1/34 kaynak PDF'in kendi font hatası — hepsi gerçek,
-  uydurma değil
+- [x] Eşanlamlı başlık desteği eklendi (`esanlamli_basliklar`) — gerçek
+  hakemlerin kabul ettiği ama farklı isimli yazılmış bölümleri artık
+  "eksik" saymıyoruz
+- [x] 34 raporun tamamı üzerinde test edildi (son durum): **32/34 sorunsuz**,
+  1/34 gerçekten eksik bölüm (KTR_12 — Kaynakça hiç yok), 1/34 kaynak
+  PDF'in kendi font hatası (KTR_08) — hepsi gerçek, uydurma değil
 - [ ] Taranmış/görüntü PDF senaryosu hâlâ test edilmedi (elimizde öyle bir
   örnek yok)
 - [ ] Hayrettin ile JSON format anlaşması resmileştirilmedi (taslak:

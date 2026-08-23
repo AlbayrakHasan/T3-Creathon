@@ -15,5 +15,9 @@
   "min_bolum_karakter": 30,
   "min_bolum_karakter_override": {
     "Takım Şeması": 0
+  },
+  "esanlamli_basliklar": {
+    "Kaynakça": ["Referanslar", "Kaynaklar"],
+    "Algoritmalar ve Sistem Mimarisi": ["Veri Setleri ve Algoritmalar"]
   }
 }

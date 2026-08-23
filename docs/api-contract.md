@@ -46,6 +46,20 @@ başlıklar arası mesafeyi ölçerek çalışıyor, `docs/mvp-rules.json`'daki
 (bölüme özel istisna — örn. "Takım Şeması" doğal olarak kısa olduğu için 0)
 ile ayarlanabiliyor.
 
+**Eşanlamlı başlıklar (`esanlamli_basliklar`):** 34 gerçek finalist raporunu
+test ederken gördük ki gerçek hakemler "Kaynakça" yerine "Referanslar"/
+"Kaynaklar" yazan raporları da kabul etmiş — birebir kelime eşleşmesi bu
+raporları haksız yere "eksik" sayıyordu. `mvp-rules.json`'da her kanonik
+başlık için bilinen varyantlar tanımlanabiliyor:
+```json
+"esanlamli_basliklar": {
+  "Kaynakça": ["Referanslar", "Kaynaklar"],
+  "Algoritmalar ve Sistem Mimarisi": ["Veri Setleri ve Algoritmalar"]
+}
+```
+Bu ekleme sonrası 34 raporun 32'si `sablon_uygun: true` çıkıyor (öncesinde
+28'di) — gerçek hakem kararına çok daha yakın bir sonuç.
+
 **Hata durumu (PDF okunamadıysa):**
 ```json
 { "hata": "PDF'ten metin çıkarılamadı (taranmış/görüntü PDF olabilir)" }

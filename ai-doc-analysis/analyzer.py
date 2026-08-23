@@ -66,14 +66,33 @@ def _turkish_casefold(s: str) -> str:
     return s.replace("İ", "i").replace("I", "ı").lower()
 
 
+def _find_heading(normalized_text: str, baslik: str, esanlamli: dict):
+    """Bir basligin (ya da bilinen esanlamlilarindan birinin) metindeki SON
+    gectigi yeri bulur. Once kanonik baslik, sonra esanlamlilar denenir.
+    Bulunursa (konum, eslesen_metnin_uzunlugu) doner, yoksa None."""
+    for varyant in [baslik] + esanlamli.get(baslik, []):
+        idx = normalized_text.rfind(_turkish_casefold(varyant))
+        if idx != -1:
+            return idx, len(varyant)
+    return None
+
+
 def check_template(text: str, rules: dict) -> dict:
-    """Zorunlu basliklarin metinde olup olmadigini kontrol eder (Turkce
-    karakter farkliliklarina duyarli, buyuk/kucuk harf farki gozetmez)."""
+    """Zorunlu basliklarin (ya da bilinen esanlamlilarinin) metinde olup
+    olmadigini kontrol eder (Turkce karakter farkliliklarina duyarli,
+    buyuk/kucuk harf farki gozetmez).
+
+    Esanlamli varyantlar `rules["esanlamli_basliklar"]` icinde tutulur -
+    gercek 34 raporda gorduk ki hakemler "Kaynakca" yerine "Referanslar"/
+    "Kaynaklar" yazan raporlari da kabul etmis; birebir kelime eslesmesi
+    boyle raporlari haksiz yere "eksik" sayardi.
+    """
     normalized_text = _turkish_casefold(text)
+    esanlamli = rules.get("esanlamli_basliklar", {})
     eksik = [
         baslik
         for baslik in rules["zorunlu_basliklar"]
-        if _turkish_casefold(baslik) not in normalized_text
+        if _find_heading(normalized_text, baslik, esanlamli) is None
     ]
     return {
         "sablon_uygun": len(eksik) == 0,
@@ -82,9 +101,9 @@ def check_template(text: str, rules: dict) -> dict:
 
 
 def check_content(text: str, rules: dict) -> list:
-    """Metinde BULUNAN basliklarin altinda yeterli icerik olup olmadigini
-    kontrol eder (eksik basliklar zaten check_template'te raporlaniyor,
-    burada onlari tekrar saymiyoruz).
+    """Metinde BULUNAN basliklarin (ya da esanlamlilarinin) altinda yeterli
+    icerik olup olmadigini kontrol eder (eksik basliklar zaten
+    check_template'te raporlaniyor, burada onlari tekrar saymiyoruz).
 
     Basligin ilk gectigi yeri degil SON gectigi yeri kullaniyoruz: gercek
     raporlarda 2. sayfa genelde "Icindekiler" oluyor ve tum basliklar orada
@@ -94,18 +113,20 @@ def check_content(text: str, rules: dict) -> list:
     normalized_text = _turkish_casefold(text)
     varsayilan_min = rules.get("min_bolum_karakter", 30)
     ozel_min = rules.get("min_bolum_karakter_override", {})
+    esanlamli = rules.get("esanlamli_basliklar", {})
 
     positions = []
     for baslik in rules["zorunlu_basliklar"]:
-        idx = normalized_text.rfind(_turkish_casefold(baslik))
-        if idx != -1:
-            positions.append((idx, baslik))
+        bulunan = _find_heading(normalized_text, baslik, esanlamli)
+        if bulunan is not None:
+            idx, eslesen_uzunluk = bulunan
+            positions.append((idx, eslesen_uzunluk, baslik))
     positions.sort()
 
     yetersiz = []
-    for i, (idx, baslik) in enumerate(positions):
+    for i, (idx, eslesen_uzunluk, baslik) in enumerate(positions):
         min_karakter = ozel_min.get(baslik, varsayilan_min)
-        bolum_baslangic = idx + len(baslik)
+        bolum_baslangic = idx + eslesen_uzunluk
         bolum_bitis = positions[i + 1][0] if i + 1 < len(positions) else len(text)
         if bolum_bitis - bolum_baslangic < min_karakter:
             yetersiz.append(baslik)
