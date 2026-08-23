@@ -48,7 +48,21 @@ Hazırlayan: Perplexity Computer | Tarih: 2026-08-23
   - `sartname_genel_2026.pdf` — 2026 Genel Şartname
   - `sartname_teknik_2026.pdf` — 2026 Teknik Şartname
 - Kaynak: https://www.teknofest.org/tr/yarismalar/havacilikta-yapay-zeka-yarismasi/ (Yarışma Şartnamesi sekmesi)
-- Not: 2026 şartnamesi KTR aşamasını ve değerlendirme sürecini tanımlar; ancak 2026 puan rubriği, 2022 raporlarındaki puanlarla aynı değildir (aşama/yıl farkı). Bkz. Puan_Rubrigi.md.
+- **DÜZELTME (Claude Code, 2026-08-23 - dosyayı bizzat açıp kontrol ederek):**
+  Perplexity'nin yukarıdaki notu **yanlış** — 2026 teknik şartnamesinde
+  "Kritik Tasarım Raporu (KTR)" terimi **hiç geçmiyor**. 2026'da bu aşama
+  **"Final Tasarım Raporu (FTR)"** olarak adlandırılıyor (bkz.
+  `sartname_teknik_2026.pdf` madde 5.2). Yani:
+  - 2026 şartnamesi bizim 2022 KTR verimiz için **doğrulanmış bir referans
+    değil** — sadece "elde hiç şartname olmasın diye indirilen en yakın
+    doküman". İçeriğinin 2022 KTR yapısıyla örtüştüğü **kontrol edilmedi**.
+  - `zorunlu_basliklar` listemiz **tamamen 2022 raporlarının kendisinden**
+    geliyor, şartnameden değil — bu yüzden bu düzeltme `mvp-rules.json`'ı
+    geçersiz kılmıyor, sadece "2026 şartnamesi referans olarak kullanılabilir"
+    iddiasını geçersiz kılıyor.
+  - Aynı isim/yapı değişimi Sağlıkta YZ'de de görülmüştü (bkz. proje
+    geçmişi) — TEKNOFEST'in yıldan yıla rapor terminolojisini/yapısını
+    değiştirmesi görünüşe göre genel bir örüntü.
 
 ## (d) Resmi KTR Şablonu Durumu
 

@@ -58,9 +58,14 @@ python tests/test_analyzer.py
       `analyzer.py`'mizle bağımsız doğrulandı (bkz. `tests/test_analyzer.py`)
     - `Puan_Rubrigi.md` — bölüm puan ağırlıkları (Hayrettin'in modülü için,
       bkz. `docs/api-contract.md`)
-    - `sartname_genel_2026.pdf`, `sartname_teknik_2026.pdf` — güncel
-      şartnameler (2022'ninki artık yayında değil)
-    - `sablon_OTR_2026.docx` — güncel (erken aşama) resmi şablon; KTR
+    - `sartname_genel_2026.pdf`, `sartname_teknik_2026.pdf` — 2022'ninki
+      artık yayında olmadığı için indirilen en yakın güncel şartname.
+      **DİKKAT:** bunlar doğrulanmış bir referans değil — 2026 şartnamesinde
+      "KTR" terimi bile geçmiyor, bu aşama artık "Final Tasarım Raporu (FTR)"
+      olarak adlandırılıyor (madde 5.2). `zorunlu_basliklar` listemiz bu
+      şartnamelerden değil, doğrudan 2022 raporlarının kendisinden geliyor —
+      detay: `sample_reports/havacilikta_yz_ktr/README.md` "DÜZELTME" notu
+    - `sablon_OTR_2026.docx` — güncel (erken aşama) resmi şablon; KTR/FTR
       şablonu artık sitede yok, bu yüzden başlıklar raporlardan çıkarıldı
   - `saglikta_yz_pdr_zebot-e1.pdf`, `saglikta_yz_pdr_ckup.pdf` — **farklı bir
     yarışmadan** (Sağlıkta Yapay Zeka) gerçek raporlar. Artık kural setimize
