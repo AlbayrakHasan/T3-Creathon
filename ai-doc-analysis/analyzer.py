@@ -163,6 +163,80 @@ def analyze_document(pdf_path: str, rules: dict) -> dict:
         return {"hata": str(e)}
 
 
+def analyze_document_for_ui(pdf_path: str, rules: dict = None) -> dict:
+    """analyze_document()'in yapilandirilmis (bool/liste) ciktisini,
+    backend'in ve hakem panelinin bekledigi
+    {"languageTemplate": {score, summary, findings}, "contentHeading": {...}}
+    formatina cevirir.
+
+    NEDEN BU FONKSIYON VAR: backend/frontend ekibi (Mustafa/Mahmut) benimle
+    senkron olmadan, 0-100 puanli + insan-okur ozet/bulgu seklinde bir
+    sozlesme uzerine tum sistemi (veritabani semasi, API, hakem paneli)
+    insa etmis (bkz. proje geçmişi). Puan bantlari onlarin
+    src/lib/ai-analysis.ts dosyasindaki esiklerle hizalandi:
+    >=85 yuksek guven, 65-84 gozden gecirilmeli, <65 kritik.
+
+    Bu fonksiyon backend'deki mock analyze_document(file_path)'in yerine
+    gecebilir - tek argumanla da cagirilabilir (rules verilmezse
+    docs/mvp-rules.json okunur).
+    """
+    if rules is None:
+        rules = load_rules()
+
+    sonuc = analyze_document(pdf_path, rules)
+
+    if "hata" in sonuc:
+        hata_check = {"score": 0, "summary": sonuc["hata"], "findings": [sonuc["hata"]]}
+        return {"languageTemplate": dict(hata_check), "contentHeading": dict(hata_check)}
+
+    # languageTemplate: dil uygunlugu + sayfa sayisi + baslik varligi
+    lt_skor = 100
+    lt_bulgular = []
+    if not sonuc["dil_uygun"]:
+        lt_skor -= 40
+        lt_bulgular.append(f"Rapor dili '{sonuc['dil']}' olarak tespit edildi, kabul edilen dil degil.")
+    if not sonuc["sayfa_uygun"]:
+        lt_skor -= 20
+        lt_bulgular.append(f"Sayfa sayisi ({sonuc['sayfa_sayisi']}) beklenen araliğin disinda.")
+    if sonuc["eksik_basliklar"]:
+        lt_skor -= min(20 * len(sonuc["eksik_basliklar"]), 60)
+        lt_bulgular.append("Eksik basliklar: " + ", ".join(sonuc["eksik_basliklar"]) + ".")
+    lt_skor = max(0, lt_skor)
+    lt_ozet = (
+        "Rapor dili ve sablon yapisi uygun."
+        if not lt_bulgular
+        else "Dil/sablon kontrolunde sorun tespit edildi."
+    )
+
+    # contentHeading: bulunan basliklarin altindaki icerigin yeterliligi
+    ch_skor = 100
+    ch_bulgular = []
+    if sonuc["icerik_yetersiz_basliklar"]:
+        ch_skor -= min(20 * len(sonuc["icerik_yetersiz_basliklar"]), 60)
+        ch_bulgular.append(
+            "Icerigi yetersiz basliklar: " + ", ".join(sonuc["icerik_yetersiz_basliklar"]) + "."
+        )
+    ch_skor = max(0, ch_skor)
+    ch_ozet = (
+        "Tum basliklarin altinda yeterli icerik var."
+        if not ch_bulgular
+        else "Bazi basliklarin altinda yeterli icerik bulunamadi."
+    )
+
+    return {
+        "languageTemplate": {
+            "score": lt_skor,
+            "summary": lt_ozet,
+            "findings": lt_bulgular or ["Tum kontroller basarili."],
+        },
+        "contentHeading": {
+            "score": ch_skor,
+            "summary": ch_ozet,
+            "findings": ch_bulgular or ["Tum basliklarin icerigi yeterli."],
+        },
+    }
+
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Kullanim: python analyzer.py <pdf_dosya_yolu>")

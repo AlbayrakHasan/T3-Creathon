@@ -67,6 +67,47 @@ Bu ekleme sonrası 34 raporun 32'si `sablon_uygun: true` çıkıyor (öncesinde
 Bu durumda backend, raporu "işlenemedi" durumuna almalı ve hakeme/yarışmacıya
 bunu bildirmeli — sistem çökmemeli.
 
+### ⚠️ Gerçek backend ile uyumsuzluk keşfedildi (2026-08-23) ve düzeltildi
+
+Takımın ayrı ilerlettiği `t3creathon_web-master` reposunda backend
+(`backend/app/services/ai.py`) ve veritabanı şeması (`AiAnalysis` tablosu:
+`language_template_score` INTEGER kolonu) ve hakem paneli (frontend,
+`src/lib/ai-analysis.ts`) benimle hiç senkron olunmadan **farklı bir format**
+üzerine kurulmuş:
+
+```json
+{
+  "languageTemplate": { "score": 92, "summary": "...", "findings": ["..."] },
+  "contentHeading": { "score": 88, "summary": "...", "findings": ["..."] }
+}
+```
+
+Bu, yukarıdaki boolean/liste tabanlı şemadan tamamen farklı — 0-100 puan +
+insan-okur özet/bulgu bekliyor. Değiştirmek yerine (DB şeması + hakem paneli
+zaten bu formata göre inşa edilmiş, geri almak daha maliyetli) bir **adaptör
+fonksiyon** yazıldı: `analyze_document_for_ui(pdf_path, rules=None) -> dict`
+(bkz. `ai-doc-analysis/analyzer.py`). Bunu çağırıp yukarıdaki iki alanı
+üretiyor, backend'deki mock `analyze_document(file_path)`'in yerine
+doğrudan geçebilir.
+
+Puan bantları `src/lib/ai-analysis.ts`'teki eşiklerle hizalandı: ≥85 "yüksek
+güven", 65-84 "gözden geçirilmeli", <65 "kritik". 34 gerçek raporla test
+edildi: 32'si her iki alanda da 100 puan, 1'i (gerçekten eksik başlık) 80
+puanla "gözden geçirilmeli" bandına, 1'i (bozuk font/yanlış dil) 60 puanla
+"kritik" bandına düşüyor — beklenen davranış.
+
+**Mustafa için entegrasyon notu:** `backend/app/services/ai.py`'deki
+`analyze_document(file_path)` fonksiyonunu silip yerine
+`ai-doc-analysis/analyzer.py`'den `analyze_document_for_ui`'ı import edip
+çağırman yeterli — dönen sözlük zaten `{"languageTemplate": ..., "contentHeading": ...}`
+şeklinde, `run_full_analysis()`'in geri kalanına dokunman gerekmiyor.
+
+**Ayrıca dikkat:** O repodaki tüm UI metinleri (özet/bulgu cümleleri, etiketler)
+**İngilizce** yazılmış, benim ürettiğim özet/bulgular ise **Türkçe**. Bu, ekip
+içinde netleştirilmesi gereken ayrı bir karar (hakem/yarışmacı kitlesi Türkçe
+konuştuğu için Türkçe daha mantıklı görünüyor, ama UI zaten İngilizce metin
+üzerine kurulmuş) — henüz kimse karar vermedi.
+
 ## 2. Kategori / Benzerlik / Kriter Değerlendirme (Hayrettin — `ai-scoring`)
 
 > Henüz Hayrettin ile netleşmedi — placeholder.

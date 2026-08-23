@@ -6,7 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from analyzer import check_template, detect_language, analyze_document, load_rules
+from analyzer import check_template, detect_language, analyze_document, load_rules, analyze_document_for_ui
 
 passed = 0
 failed = 0
@@ -122,6 +122,30 @@ check("dil_uygun alani var ve True (tr kabul edilen dil)", sonuc.get("dil_uygun"
 check("sayfa_sayisi sayi olarak donuyor", isinstance(sonuc.get("sayfa_sayisi"), int) and sonuc["sayfa_sayisi"] > 0)
 check("sayfa_uygun True (8-18 sayfa araliginda)", sonuc.get("sayfa_uygun") is True)
 check("icerik_yetersiz_basliklar bos liste (Takim Semasi istisnasi calisiyor)", sonuc.get("icerik_yetersiz_basliklar") == [])
+
+# 10. analyze_document_for_ui: backend'in bekledigi score/summary/findings
+# formatina cevirme katmani (bkz. t3creathon_web-master/backend/app/services/ai.py
+# - takim orada baska bir sozlesme uzerine calismis, bu adaptor onu koprulyor)
+sonuc = analyze_document_for_ui(str(ktr_dir / "KTR_00_YXpGnt7IevOLKmM75xNlXyQlgHmz2bTM.pdf"), gercek_rules)
+check("analyze_document_for_ui: languageTemplate anahtari var", "languageTemplate" in sonuc)
+check("analyze_document_for_ui: contentHeading anahtari var", "contentHeading" in sonuc)
+check("tam uygun raporda languageTemplate skoru 100", sonuc["languageTemplate"]["score"] == 100)
+check("tam uygun raporda contentHeading skoru 100", sonuc["contentHeading"]["score"] == 100)
+
+sonuc = analyze_document_for_ui(str(ktr_dir / "KTR_12_iG0MdwwmzU4g74omya3paxGSLfsqawqd.pdf"), gercek_rules)
+check(
+    "eksik baslikli raporda languageTemplate skoru 85'in altina dusuyor (caution bandina girer)",
+    sonuc["languageTemplate"]["score"] < 85,
+)
+
+sonuc = analyze_document_for_ui(str(ktr_dir / "KTR_08_PhJX36PYmJso87uscHkQSwbe2P7HyFbs.pdf"), gercek_rules)
+check(
+    "bozuk font/yanlis dil raporunda languageTemplate skoru 65'in altina dusuyor (critical bandina girer)",
+    sonuc["languageTemplate"]["score"] < 65,
+)
+
+sonuc = analyze_document_for_ui("olmayan_dosya.pdf", gercek_rules)
+check("olmayan dosyada analyze_document_for_ui cokmuyor, skor 0 donuyor", sonuc["languageTemplate"]["score"] == 0)
 
 print(f"\n{passed} basarili, {failed} basarisiz")
 sys.exit(1 if failed else 0)
